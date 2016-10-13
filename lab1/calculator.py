@@ -15,11 +15,8 @@ class Calculator():
 		return operator1 * operator2
 
 	def div (self, operator1=0, operator2=0):
-		if operator2 != 0:
-			return operator1 / operator2
-		else :
-			return 0
-
+		
+		return operator1 / operator2
 
 	def getID (self):
 		return self.id

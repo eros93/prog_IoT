@@ -5,64 +5,42 @@ from calculator import Calculator
 if __name__ == "__main__":
 	my_calc_1 = Calculator("calculator_1");
 
-
-
-
-
-
-
 ans=True
 while ans:
-    print ("""
-    1.Addition
-    2.Substraction
-    3.Multiplication
-    4.Division
-    5.Exit
-    """)
-    ans=raw_input("Which operation do you need? ") 
-    if ans=="1": 
+    input_string=raw_input("\n\tInsert <command> <operator1> <operator2> ... <operatorN> :\n\t") 
+    input_list = input_string.split(' ')
+   # input_list = input_list.reverse()
+    ans=input_list.pop(0)
+    print ans
+    op1=float(input_list[1])
+    op2=float(input_list[2])
+
+    if ans=="add": 
       print("\n ADDITION") 
-      op1=input("operator 1: ")
-      op2=input("operator 2: ")
       result = my_calc_1.add(op1,op2)
-      print "%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
 
-    elif ans=="2":
+    elif ans=="sub":
       print("\n SUBSTRACTION") 
-      op1=input("operator 1: ")
-      op2=input("operator 2: ")
       result = my_calc_1.sub(op1,op2)
-      print "%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
 
-    elif ans=="3":
+    elif ans=="mul":
       print("\n MULTIPLICATION") 
-      op1=input("operator 1: ")
-      op2=input("operator 2: ")
       result = my_calc_1.mul(op1,op2)
-      print "%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
 
-    elif ans=="4":
+    elif ans=="div":
       print("\n DIVISION") 
-      op1=input("operator 1: ")
-      op2=input("operator 2: ")
-      result = my_calc_1.div(op1,op2)
-      print "%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      try:
+      	result = my_calc_1.div(op1,op2)
+      except ZeroDivisionError:
+      	print "\tCan't divide by zero"
+      else:
+      	print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
 
     elif ans !="":
-      print("\n Not Valid Choice Try again") 
-
-
-
-
-
-
-
-
-
-
-
-
+      print("\n\tNot Valid Choice Try again") 
 
 
 
