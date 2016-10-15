@@ -23,7 +23,7 @@ while ans:
     
 
     if ans=="add": 
-      print("\nADDITION") 
+      print("\n\t\tADDITION") 
       result=op.pop(0)
       obj["op1"] = result
       for x in xrange(0,n-1):
@@ -31,14 +31,14 @@ while ans:
       	temp_op = op.pop(0)
       	obj[temp_str]=temp_op
       	result=my_calc_1.add(result,temp_op)
-      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\n\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
       obj["result"] = result
       output_json=json.dumps(obj)
       print output_json
 
 
     elif ans=="sub":
-      print("\nSUBSTRACTION") 
+      print("\n\t\tSUBSTRACTION") 
       result=op.pop(0)
       obj["op1"] = result
       for x in xrange(0,n-1):
@@ -46,14 +46,14 @@ while ans:
       	temp_op = op.pop(0)
       	obj[temp_str]=temp_op
       	result=my_calc_1.sub(result,temp_op)
-      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\n\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
       obj["result"] = result
       output_json=json.dumps(obj)
       print output_json
 
 
     elif ans=="mul":
-      print("\nMULTIPLICATION") 
+      print("\n\t\tMULTIPLICATION") 
       result=op.pop(0)
       obj["op1"] = result
       for x in xrange(0,n-1):
@@ -61,14 +61,14 @@ while ans:
       	temp_op = op.pop(0)
       	obj[temp_str]=temp_op
       	result=my_calc_1.mul(result,temp_op)
-      print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      print "\n\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
       obj["result"] = result
       output_json=json.dumps(obj)
       print output_json
 
 
     elif ans=="div":
-      print("\nDIVISION") 
+      print("\n\t\tDIVISION") 
       try:
       	result=op.pop(0)
       	obj["op1"] = result
@@ -78,9 +78,9 @@ while ans:
       	  obj[temp_str]=temp_op
       	  result=my_calc_1.div(result,temp_op)
       except ZeroDivisionError:
-      	print "\tCan't divide by zero"
+      	print "\t\nCan't divide by zero"
       else:
-      	print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
+      	print "\t\n%s: the result is %.2f \n" % (my_calc_1.getID(), result)
       obj["result"] = result
       output_json=json.dumps(obj)
       print output_json
