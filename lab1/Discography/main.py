@@ -46,9 +46,15 @@ while ans:
         disc.search_by_total_tracks(input_string)
 
     elif ans=="5": 
+    	input_string={}
         print("\n\t---> Insert New Disc\n")
-        input_string=raw_input("\n\tPlease insert <artist_name> <title> <pubblication_year> <total_tracks>: ")
-        #input_list = input_string.split(' ')
+        input_string["artist"]=raw_input("\n\tPlease insert <artist_name>: ")
+        input_string["title"]=raw_input("\n\tPlease insert <title>: ")
+        input_string["publication_year"]=eval(raw_input("\n\tPlease insert <publication_year>: "))
+        input_string["total_tracks"]=eval(raw_input("\n\tPlease insert <total_tracks>: "))
+        disc.insert_new_album(input_string)
+        print("\n\t---> Save changes and exiting....\n")
+        ans=False
 
     elif ans=="6": 
         print("\n\t---> See all discography "+filename+" \n")
