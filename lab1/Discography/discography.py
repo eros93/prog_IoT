@@ -81,12 +81,23 @@ class Discography():
 
 		time = datetime.datetime.now()
 		obj["last_update"] = str(time.replace(second=0,microsecond=0))
-		obj["album_list"].insert(0,new_album)
+		flag = 0
+		for x in range(self.n-1):
+			if obj["album_list"][x]["artist"].lower() == new_album["artist"].lower():
+				if obj["album_list"][x]["title"].lower() == new_album["title"].lower():
+					flag = 1
 
-		self.txt_disc = open(self.name, 'w')
-		self.txt_disc.truncate()
-		self.txt_disc.write(json.dumps(obj))
-		self.txt_disc.close()
+
+		if flag == 1 :
+			print("\n\t---->Album already insert<----")
+
+		else :
+			obj["album_list"].insert(0,new_album)
+			self.txt_disc = open(self.name, 'w')
+			self.txt_disc.truncate()
+			self.txt_disc.write(json.dumps(obj))
+			self.txt_disc.close()
+		
 
 
 class Album():
