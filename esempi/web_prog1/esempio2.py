@@ -3,12 +3,7 @@ import cherrypy
 class Generator(object):
 
 	def hello(self,* uri,** params):
-		return '''<form action="replay" method= "POST">
-		Sequence (in FASTA format):<br />
-		<textarea name="seq" rows="10" cols="80" /></textarea><br />
-		<input type="submit" />
-		</form>
-		'''
+		return open('./hello/hello_form.html', 'r').read()
 
 	hello.exposed = True
 
@@ -17,7 +12,10 @@ class Generator(object):
 
 	replay.exposed = True
 
+
 if __name__=='__main__':
 	cherrypy.tree.mount(Generator(), '/')
 	cherrypy.engine.start()
 	cherrypy.engine.block()
+
+
