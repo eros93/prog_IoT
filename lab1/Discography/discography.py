@@ -82,14 +82,14 @@ class Discography():
 		time = datetime.datetime.now()
 		obj["last_update"] = str(time.replace(second=0,microsecond=0))
 		flag = 0
+		
 		for x in range(self.n-1):
 			if obj["album_list"][x]["artist"].lower() == new_album["artist"].lower():
 				if obj["album_list"][x]["title"].lower() == new_album["title"].lower():
 					flag = 1
 
-
 		if flag == 1 :
-			print("\n\t---->Album already insert<----")
+			print("\n\t---->Album already inserted<----")
 
 		else :
 			obj["album_list"].insert(0,new_album)

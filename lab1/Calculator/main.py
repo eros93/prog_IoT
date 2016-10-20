@@ -85,6 +85,11 @@ while ans:
       output_json=json.dumps(obj)
       print output_json
 
+    
+    elif (ans=="quit")|(ans=="end")|(ans=="stop"):
+    	print ("\n\tExiting from PYTHON CALCULATOR PLUS ...\n\n")
+    	ans=False
+
 
     elif ans !="":
       print("\n\tNot Valid Choice Try again")
