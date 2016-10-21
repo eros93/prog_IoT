@@ -3,7 +3,7 @@
 import json
 import cherrypy
 
-class WebCalculator(object):
+class WebCalculatorV2(object):
 
 	exposed=True
 
@@ -51,16 +51,16 @@ class WebCalculator(object):
 	def GET (self, *uri, **params):
 		self.command = uri[0]
 
-		if len(params.values())!=2:
-			return "You are missing at least one parameter! <br/><br/>Remember:	./'command'?op1='operator1'&op2='operator1'"
+		if len(uri)!=3:
+			return "You are missing at least one parameter! <br/><br/>Remember:	./'command'/'operator1'/'operator2'"
 
 		try:
-			self.operator1 = float(params["op1"])
+			self.operator1 = float(uri[1])
 		except ValueError:
 			return "Operator1 is not a number! Try again"
 		
 		try:
-			self.operator2 = float(params["op2"])
+			self.operator2 = float(uri[2])
 		except ValueError:
 			return "Operator2 is not a number! Try again"
 
@@ -69,7 +69,7 @@ class WebCalculator(object):
 				return "\n\tCan't divide by zero"
 
 		if ((self.command!="add") and (self.command!="sub") and (self.command!="mul") and (self.command!="div")):
-			return "\n\tNot Valid Choice Try again"
+			return "\n\tNot Valid Command Try again"
 
 		result = self.calculate()
 		cherrypy.session['result'] = result
@@ -80,4 +80,4 @@ class WebCalculator(object):
 		params["result"] = result
 		output_json = json.dumps(params)
 		
-		return output_json
+		return output_json	
