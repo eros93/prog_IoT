@@ -69,7 +69,7 @@ class WebCalculator(object):
 				return "\n\tCan't divide by zero"
 
 		if ((self.command!="add") and (self.command!="sub") and (self.command!="mul") and (self.command!="div")):
-			return "\n\tNot Valid Choice Try again"
+			return "\n\tNot Valid Command Try again"
 
 		result = self.calculate()
 		cherrypy.session['result'] = result
