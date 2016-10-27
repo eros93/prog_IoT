@@ -85,6 +85,55 @@ class WebCalculatorV2(object):
 
 	def POST(self, *uri, **params):
 		json_input = cherrypy.request.body.read()
-		return json_input
-		# input_list = json.loads(json_input)
-		# self.command = input_list["command"]
+		input_list = json.loads(json_input)
+		self.command = input_list["command"]
+		n=len(input_list["operands"])
+		op=input_list["operands"]
+
+		if ((self.command!="add") and (self.command!="sub") and (self.command!="mul") and (self.command!="div")):
+			return "\n\tNot Valid Command Try again"
+
+		if self.command=="add": 
+			result=float(op.pop(0))
+			for x in xrange(0,n-1):
+				temp_op = float(op.pop(0))
+				result=self.add(result,temp_op)
+			input_list = json.loads(json_input)
+			input_list["result"] = result
+			output_json=json.dumps(input_list)
+			return output_json
+
+		elif self.command=="sub": 
+			result=float(op.pop(0))
+			for x in xrange(0,n-1):
+				temp_op = float(op.pop(0))
+				result=self.sub(result,temp_op)
+			input_list = json.loads(json_input)
+			input_list["result"] = result
+			output_json=json.dumps(input_list)
+			return output_json
+
+		elif self.command=="mul": 
+			result=float(op.pop(0))
+			for x in xrange(0,n-1):
+				temp_op = float(op.pop(0))
+				result=self.mul(result,temp_op)
+			input_list = json.loads(json_input)
+			input_list["result"] = result
+			output_json=json.dumps(input_list)
+			return output_json
+
+		elif self.command=="div": 
+			try:
+				result=float(op.pop(0))
+				for x in xrange(0,n-1):
+					temp_op = float(op.pop(0))
+					result=self.div(result,temp_op)
+			except ZeroDivisionError:
+				return "\n\tCan't divide by zero"
+			else:	
+				input_list = json.loads(json_input)
+				input_list["result"] = result
+				output_json=json.dumps(input_list)
+				return output_json
+
