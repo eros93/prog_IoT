@@ -3,7 +3,7 @@
 import json
 import cherrypy
 
-class WebCalculatorV2(object):
+class WebCalculatorV3(object):
 
 	exposed=True
 

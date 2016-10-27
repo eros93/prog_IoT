@@ -81,9 +81,9 @@ while ans:
       	print "\tCan't divide by zero"
       else:
       	print "\t%s: the result is %.2f \n" % (my_calc_1.getID(), result)
-      obj["result"] = result
-      output_json=json.dumps(obj)
-      print output_json
+        obj["result"] = result
+        output_json=json.dumps(obj)
+        print output_json
 
     
     elif (ans=="quit")|(ans=="end")|(ans=="stop"):
