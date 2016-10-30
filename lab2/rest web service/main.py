@@ -27,21 +27,23 @@ if __name__ == "__main__":
 			'tools.sessions.on':True,
 			'tools.staticdir.root':os.path.abspath(os.getcwd()) #this function return the path where the main.py is stored
 		},
-		# '/freeboard':{
+		'/banana':{
+			'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
+			'tools.staticdir.on':True,
+			'tools.staticdir.dir':'./freeboard', #this static assigment is the path of freeboard (it must be in the same folder of main.py)
+		}
+		#SEMBRA NON SIANO NECESSARI (BOH... ALLORA IL TIZIO NON HA SPIEGATO BENE)
+		#COMUNQUE MI RESTA IL DUBBIO CHE SIA SOLO UNA CONFIGURAZIONE FORTUNATA AHAH
+		# 'js/freeboard.thirdparty.min.js':{
 		# 	'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
 		# 	'tools.staticdir.on':True,
-		# 	'tools.staticdir.dir':'./freeboard', #this static assigment is the path of freeboard (it must be in the same folder of main.py)
+		# 	'tools.staticdir.dir':'./js/freeboard.thirdparty.min.js'
 		# },
-		'js/freeboard.thirdparty.min.js':{
-			'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
-			'tools.staticdir.on':True,
-			'tools.staticdir.dir':'./js/freeboard.thirdparty.min.js'
-		},
-		'css/freeboard.min.css':{
-			'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
-			'tools.staticdir.on':True,
-			'tools.staticdir.dir':'./css/freeboard.min.css'
-		}
+		# 'css/freeboard.min.css':{
+		# 	'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
+		# 	'tools.staticdir.on':True,
+		# 	'tools.staticdir.dir':'./css/freeboard.min.css'
+		# }
 	}
 	cherrypy.tree.mount(FreeboardAgent(1), '/',conf)
 	cherrypy.engine.start()
