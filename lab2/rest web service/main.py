@@ -20,6 +20,15 @@ class FreeboardAgent(object):
 		return serve_file(path)
 #		return os.path.abspath(os.getcwd())
 
+	def POST(self,*uri,**params):
+		json_string=params["json_string"]
+		path="./freeboard/dashboard/dashboard.json"
+		txt_disc = open(path, 'w+')
+		#txt_disc.truncate()
+		txt_disc.write(json_string)
+		txt_disc.close()
+		return 
+
 if __name__ == "__main__":
 	conf = {
 		'/':{
@@ -27,7 +36,7 @@ if __name__ == "__main__":
 			'tools.sessions.on':True,
 			'tools.staticdir.root':os.path.abspath(os.getcwd()) #this function return the path where the main.py is stored
 		},
-		'/banana':{
+		'/static':{
 			'request.dispatch':cherrypy.dispatch.MethodDispatcher(), 
 			'tools.staticdir.on':True,
 			'tools.staticdir.dir':'./freeboard', #this static assigment is the path of freeboard (it must be in the same folder of main.py)
