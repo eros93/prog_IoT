@@ -104,12 +104,8 @@ class WebDiscography(object):
 
 	def GET(self,*uri,**params):
 		if params["idcommand"] == "1":
-			self.txt_disc = open(self.name, 'r')
-			all_disc = self.txt_disc.read()
-			self.txt_disc.close()
+			all_disc = self.print_all()
 			return all_disc
-#			all_disc = self.print_all()
-#			return all_disc
 
 class Album():
 	"""Album class"""
