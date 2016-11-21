@@ -34,48 +34,90 @@ class WebDiscography(object):
 			tmp_album.tot_tracks = obj["album_list"][x]["total_tracks"]
 			self.albums[str(x)] = tmp_album
 
+
 	def print_all(self):
 		self.txt_disc = open(self.name, 'r')
 		all_disc = self.txt_disc.read()
 		self.txt_disc.close()
 		return all_disc
 
+
 	def search_by_artist(self,artist):
-		print ("\n\tAlbums found for Artist: "+artist)
+		result = {}
+		result["found_list"]=[]
+		tmp_result={}
+		flag=0
 		for x in range(self.n):
 			if self.albums[str(x)].artist.lower() == artist.lower():
-				print ("\n\t\tTitle: "+self.albums[str(x)].title)
-				print ("\n\t\tPublication year: %d" %self.albums[str(x)].pub_year)
-				print ("\n\t\tTotal_tracks : %d" %self.albums[str(x)].tot_tracks)
-				print "\n"				
+				tmp_result["title"] = self.albums[str(x)].title
+				tmp_result["pubblication_year"] = self.albums[str(x)].pub_year
+				tmp_result["total_tracks"] = self.albums[str(x)].tot_tracks
+				result["found_list"].append(tmp_result)
+				flag=1
+
+		if flag != 0 :
+			return json.dumps(result)
+		else :
+			return "artist not found"
+
 
 	def search_by_title(self,title):
-		print ("\n\tAlbums found for Title: "+title)
+		result = {}
+		result["found_list"]=[]
+		tmp_result={}
+		flag=0
 		for x in range(self.n):
 			if self.albums[str(x)].title.lower() == title.lower():
-				print ("\n\t\tArtist: "+self.albums[str(x)].artist)
-				print ("\n\t\tPublication year: %d" %self.albums[str(x)].pub_year)
-				print ("\n\t\tTotal_tracks : %d" %self.albums[str(x)].tot_tracks)
-				print "\n"
+				tmp_result["artist"] = self.albums[str(x)].artist
+				tmp_result["pubblication_year"] = self.albums[str(x)].pub_year
+				tmp_result["total_tracks"] = self.albums[str(x)].tot_tracks
+				result["found_list"].append(tmp_result)
+				flag=1
+
+		if flag != 0 :
+			return json.dumps(result)
+		else :
+			return "title not found"
+
 
 	def search_by_pubblication_year(self,year):
-		print ("\n\tAlbums found for Year: "+str(year))
+		result = {}
+		result["found_list"]=[]
+		tmp_result={}
+		flag=0
 		for x in range(self.n):
 			if str(self.albums[str(x)].pub_year) == str(year):
-				print ("\n\t\tArtist: "+self.albums[str(x)].artist)
-				print ("\n\t\tTitle: "+self.albums[str(x)].title)
-				print ("\n\t\tTotal_tracks : %d" %self.albums[str(x)].tot_tracks)
-				print "\n"
+				tmp_result["artist"] = self.albums[str(x)].artist
+				tmp_result["title"] = self.albums[str(x)].title
+				tmp_result["total_tracks"] = self.albums[str(x)].tot_tracks
+				result["found_list"].append(tmp_result)
+				flag=1
+
+		if flag != 0 :
+			return json.dumps(result)
+		else :
+			return "pubblication_year not found"
+
 
 	def search_by_total_tracks(self,tracks):
-		print ("\n\tAlbums found for Total tracks: "+str(tracks))
+		result = {}
+		result["found_list"]=[]
+		tmp_result={}
+		flag=0
 		for x in range(self.n):
 			if str(self.albums[str(x)].tot_tracks) == str(tracks):
-				print ("\n\t\tArtist: "+self.albums[str(x)].artist)
-				print ("\n\t\tTitle: "+self.albums[str(x)].title)
-				print ("\n\t\tPublication year: %d" %self.albums[str(x)].pub_year)
-				print "\n"
+				tmp_result["artist"] = self.albums[str(x)].artist
+				tmp_result["title"] = self.albums[str(x)].title
+				tmp_result["pubblication_year"] = self.albums[str(x)].pub_year
+				result["found_list"].append(tmp_result)
+				flag=1
 
+		if flag != 0 :
+			return json.dumps(result)
+		else :
+			return "total_tracks not found"
+
+#------------------> DA IMPLEMENTARE CON PUT ? (anche delete function) <-------------------
 	def insert_new_album(self,new_album):
 		self.n=self.n+1
 		
@@ -103,9 +145,29 @@ class WebDiscography(object):
 			self.txt_disc.close()
 
 	def GET(self,*uri,**params):
-		if params["idcommand"] == "1":
+		if params["idcommand"] == "6":
 			all_disc = self.print_all()
 			return all_disc
+
+	def POST(self,*uri,**params):
+		json_input = cherrypy.request.body.read()
+		input_list = json.loads(json_input)
+		idcommand = input_list["idcommand"]
+		if idcommand == "1" :
+			result = self.search_by_artist(input_list["key_word"])
+			return result
+		elif idcommand == "2" :
+			result = self.search_by_title(input_list["key_word"])
+			return result
+		elif idcommand == "3" :
+			result = self.search_by_pubblication_year(input_list["key_word"])
+			return result
+		elif idcommand == "4" :
+			result = self.search_by_total_tracks(input_list["key_word"])
+			return result
+
+
+
 
 class Album():
 	"""Album class"""
