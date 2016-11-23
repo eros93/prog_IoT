@@ -1,0 +1,22 @@
+GET
+localhost:8080?idcommand=6
+
+POST
+{
+  "idcommand":"1",
+  "key_word":"Pink Floyd"
+}
+
+PUT
+{
+  "idcommand": "5",
+  "new_album":{
+	"artist": "Oasis",
+	"title": "Definitely Maybe",
+	"publication_year": 1994,
+	"total_tracks": 11
+     }
+}
+
+DELETE
+localhost:8080?idcommand=7&artist=Oasis&title=Definitely Maybe

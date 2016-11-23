@@ -117,37 +117,73 @@ class WebDiscography(object):
 		else :
 			return "total_tracks not found"
 
-#------------------> DA IMPLEMENTARE CON PUT ? (anche delete function) <-------------------
+
 	def insert_new_album(self,new_album):
-		self.n=self.n+1
-		
+
 		self.txt_disc = open(self.name, 'r')
 		obj=json.loads(self.txt_disc.read())
 		self.txt_disc.close()
 
-		time = datetime.datetime.now()
-		obj["last_update"] = str(time.replace(second=0,microsecond=0))
 		flag = 0
-		
-		for x in range(self.n-1):
-			if obj["album_list"][x]["artist"].lower() == new_album["artist"].lower():
+		for x in range(self.n):
+			if obj["album_list"][x]["artist"].lower() == new_album["artist"].lower():	#PROBLEMA QUI NON VEDE X COME UN INTERO?
 				if obj["album_list"][x]["title"].lower() == new_album["title"].lower():
 					flag = 1
 
 		if flag == 1 :
-			print("\n\t---->Album already inserted<----")
+			return "already inserted"
 
 		else :
+			self.n=self.n+1
+			time = datetime.datetime.now()
+			obj["last_update"] = str(time.replace(second=0,microsecond=0))
+			
 			obj["album_list"].insert(0,new_album)
+			
 			self.txt_disc = open(self.name, 'w')
 			self.txt_disc.truncate()
 			self.txt_disc.write(json.dumps(obj))
 			self.txt_disc.close()
+			
+			return 0
+
+	
+	def delete_album(self,album_info):
+
+		self.txt_disc = open(self.name, 'r')
+		obj=json.loads(self.txt_disc.read())
+		self.txt_disc.close()
+
+		flag = 0
+		for x in range(self.n):
+			if obj["album_list"][x]["artist"].lower() == album_info["artist"].lower():	#PROBLEMA QUI NON VEDE X COME UN INTERO?
+				if obj["album_list"][x]["title"].lower() == album_info["title"].lower():
+					hit = x
+					flag = 1
+
+		if flag == 0 :
+			return "not found"
+
+		else :
+			self.n=self.n-1
+			time = datetime.datetime.now()
+			obj["last_update"] = str(time.replace(second=0,microsecond=0))
+			
+			obj["album_list"].pop(hit)
+			
+			self.txt_disc = open(self.name, 'w')
+			self.txt_disc.truncate()
+			self.txt_disc.write(json.dumps(obj))
+			self.txt_disc.close()
+			
+			return 0
+
 
 	def GET(self,*uri,**params):
 		if params["idcommand"] == "6":
 			all_disc = self.print_all()
 			return all_disc
+
 
 	def POST(self,*uri,**params):
 		json_input = cherrypy.request.body.read()
@@ -167,6 +203,29 @@ class WebDiscography(object):
 			return result
 
 
+	def PUT(self,*uri,**params):
+		json_input = cherrypy.request.body.read()
+		input_list = json.loads(json_input)
+		idcommand = input_list["idcommand"]
+		
+		if idcommand == "5" :
+			result = self.insert_new_album(input_list["new_album"])	#vedere esempio json per struttura del json della richiesta PUT_DELETE
+			if result == 0:
+				input_list["response"] = result		#If Insert is OK --> inputlist["response"] = 0
+			else: input_list["response"] = result   #If Insert not done --> inputlist["response"] = "already inserted"
+			return json.dumps(input_list)
+
+
+	def DELETE(self,*uri,**params):
+		if params["idcommand"] == "7" :
+			input_list={}
+			input_list["artist"] =  params["artist"]
+			input_list["title"] =  params["title"]
+			result = self.delete_album(input_list)	#vedere esempio json per struttura del json della richiesta PUT_DELETE
+			if result == 0:
+				input_list["response"] = result		#If Insert is OK --> inputlist["response"] = 0
+			else: input_list["response"] = result   #If Insert not done --> inputlist["response"] = "not found"
+			return json.dumps(input_list)
 
 
 class Album():
