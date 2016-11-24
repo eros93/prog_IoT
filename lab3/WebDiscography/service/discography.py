@@ -58,7 +58,7 @@ class WebDiscography(object):
 		if flag != 0 :
 			return json.dumps(result)
 		else :
-			return "artist not found"
+			return "Artist not found"
 
 
 	def search_by_title(self,title):
@@ -77,7 +77,7 @@ class WebDiscography(object):
 		if flag != 0 :
 			return json.dumps(result)
 		else :
-			return "title not found"
+			return result["found_list"].append("Artist not found")
 
 
 	def search_by_pubblication_year(self,year):
@@ -96,7 +96,7 @@ class WebDiscography(object):
 		if flag != 0 :
 			return json.dumps(result)
 		else :
-			return "pubblication_year not found"
+			return "Pubblication year not found"
 
 
 	def search_by_total_tracks(self,tracks):
@@ -115,7 +115,7 @@ class WebDiscography(object):
 		if flag != 0 :
 			return json.dumps(result)
 		else :
-			return "total_tracks not found"
+			return "Total tracks not found"
 
 
 	def insert_new_album(self,new_album):
@@ -131,7 +131,7 @@ class WebDiscography(object):
 					flag = 1
 
 		if flag == 1 :
-			return "already inserted"
+			return "Already inserted"
 
 		else :
 			self.n=self.n+1
@@ -162,7 +162,7 @@ class WebDiscography(object):
 					flag = 1
 
 		if flag == 0 :
-			return "not found"
+			return "Not found"
 
 		else :
 			self.n=self.n-1
