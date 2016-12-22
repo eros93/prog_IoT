@@ -18,7 +18,7 @@ while ans:
     MENU:
     1. Get TEMPERATURE from sensor
     2. Get HUMIDITY from sensor
-    3. Get both TEMPERATURE and HUMIDITY
+    3. Get both TEMPERATURE and HUMIDITY [NOT ACTIVE]
     4. Get the STATUS of RELAY
     5. CHANGE status of RELAY
     6. Exit
@@ -31,7 +31,8 @@ while ans:
         if r.status_code==200:
             print("\t--> REQUEST SUCCESS!")
             result=json.loads(r.text)
-            print("\n\tTemperature: "+result["temp"]+"*C")
+            print("\n\tTemperature: "+result["e"][0]["v"]+"*C")
+            print("\tTime (linux): "+result["e"][0]["t"])
         else: print("\n\tBad Response from Web Server")
 
     elif ans=="2":
@@ -40,18 +41,20 @@ while ans:
         if r.status_code==200:
             print("\t--> REQUEST SUCCESS!")
             result=json.loads(r.text)
-            print("\n\tHumidity: "+result["hum"]+"%")
+            print("\n\tHumidity: "+result["e"][0]["v"]+"%")
+            print("\tTime (linux): "+result["e"][0]["t"])
         else: print("\n\tBad Response from Web Server")
 
     elif ans=="3":
-        print("\n\t---> Get TEMPERATURE and HUMIDITY")
-        r=requests.get(url_req+"all")
-        if r.status_code==200:
-            print("\t--> REQUEST SUCCESS!")
-            result=json.loads(r.text)
-            print("\n\tTemperature: "+result["temp"]+"*C")
-            print("\tHumidity: "+result["hum"]+"%")
-        else: print("\n\tBad Response from Web Server")
+        print("\n\tNot ACTIVE")
+        # print("\n\t---> Get TEMPERATURE and HUMIDITY")
+        # r=requests.get(url_req+"all")
+        # if r.status_code==200:
+        #     print("\t--> REQUEST SUCCESS!")
+        #     result=json.loads(r.text)
+        #     print("\n\tTemperature: "+result["temp"]+"*C")
+        #     print("\tHumidity: "+result["hum"]+"%")
+        # else: print("\n\tBad Response from Web Server")
 
     elif ans=="4":
         print("\n\t---> Get RELAY STATUS (0-->OFF and 1-->ON)")
@@ -59,7 +62,8 @@ while ans:
         if r.status_code==200:
             print("\t--> REQUEST SUCCESS!")
             result=json.loads(r.text)
-            print("\n\tRelay status: "+result["relay_stat"])
+            print("\n\tRelay status: "+result["e"][0]["v"])
+            print("\tTime (linux): "+result["e"][0]["t"])
         else: print("\n\tBad Response from Web Server")
 
     elif ans=="5":
@@ -70,7 +74,8 @@ while ans:
         if r.status_code==200:
             print("\t--> REQUEST SUCCESS!")
             result=json.loads(r.text)
-            print("\n\tRelay Status is changed! New status: "+result["relay_stat"])
+            print("\n\tRelay Status is changed! New status: "+result["e"][0]["v"])
+            print("\tTime (linux): "+result["e"][0]["t"])
         else: print("\n\tBad Response from Web Server")
 
     elif ans=="6":
