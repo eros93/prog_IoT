@@ -90,7 +90,7 @@ void loop(){
   Serial.println(string);                 //DEBUG
   
   client.publish(mqtt_t.c_str(),string,true);   // true --> RETAIN
-  delay(10000);
+  delay(300000);  //Publish every 5 minutes
 }
 
 
