@@ -1,0 +1,30 @@
+{
+	"broker_ip": "192.168.1.151",
+	"dev_list": [{
+		"subnet": "1",
+		"mqtt_topic": "sensor/subnet/1/hum_temp",
+		"mqtt_role": "p",
+		"rn": "ard1",
+		"ip_address": "192.168.1.10",
+		"resources": ["temp", "hum_gr"]
+	}, {
+		"subnet": "1",
+		"mqtt_topic": "actuator/subnet/1/in_pump",
+		"mqtt_role": "s",
+		"rn": "rasp2",
+		"ip_address": "192.168.1.100",
+		"resources": ["in_pump"]
+	}, {
+		"subnet": "1",
+		"mqtt_topic": "actuator/subnet/1/out_pump",
+		"mqtt_role": "s",
+		"rn": "rasp3",
+		"ip_address": "192.168.1.151",
+		"resources": ["out_pump"]
+	}],
+	"broker_port": 1883,
+	"weath_mqtt_out_topic":"weather/forecast",
+	"weath_api_key": "c61a2cd84bc2ec6fea75e59362e61c9c",
+	"latitude": 45.063306,
+	"longitude": 7.660051
+}
