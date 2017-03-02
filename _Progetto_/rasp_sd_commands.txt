@@ -1,0 +1,10 @@
+CREARE SD
+df -h
+umount /dev/mmcblk0p1
+umount /dev/mmcblk0p2
+sudo dd bs=4M if=/home/enrico/Scaricati/qBittorrent/2017-01-11-raspbian-jessie-lite.img of=/dev/mmcblk0
+sync
+
+
+BACKUP SD
+sudo dd bs=4M if=/dev/mmcblk0 | gzip > rasp.img.gz
