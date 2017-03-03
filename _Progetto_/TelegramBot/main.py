@@ -47,7 +47,6 @@ while True:
     if len(updates["result"]) > 0:
         last_update_id = Bot.get_last_update_id() + 1
         Bot.prettyprint_json(updates)
-        #Bot.send_message("Risposta DEBUG", updates["message"]["chat"]["id"])
         handle_updates(Bot,updates)
     time.sleep(0.5)
 
