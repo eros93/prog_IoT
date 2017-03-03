@@ -46,11 +46,11 @@ class ResourceCatalog(object):
 		self.rc_obj["dev_list"].append(obj)
 		self.rc = open("./resource_catalog.json", "w")
 		self.rc.truncate()
-		self.rc.write(json.dumps(self.rc_obj))
+		self.rc.write(json.dumps(self.rc_obj, sort_keys=True, indent=4, separators=(',', ': ')))
 		self.rc.close()
 		self.read_rc()
 		return json.dumps(self.dev_list)
-
+    	
 	def delete_dev(self, rn):
 		self.read_rc()
 

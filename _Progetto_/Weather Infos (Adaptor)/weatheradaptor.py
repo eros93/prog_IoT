@@ -77,6 +77,7 @@ class WeatherInfo(object):
 		tmp_obj["precipProb"] = self.daily["data"][1]["precipProbability"]
 		tmp_obj["precipInt"] = self.daily["data"][1]["precipIntensity"]
 		
+		#return json.dumps(tmp_obj, sort_keys=True, indent=4, separators=(',', ': '))	#prettyprint
 		return json.dumps(tmp_obj)
 
 

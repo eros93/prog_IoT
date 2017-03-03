@@ -32,6 +32,8 @@ def periodical_update():
 
 if __name__ == "__main__":
 
+	periodical_update()
+
 	schedule.every().day.at("21:00").do(periodical_update)
 
 	while True:

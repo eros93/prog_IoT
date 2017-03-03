@@ -90,6 +90,7 @@ void loop(){
   Serial.println(string);                 //DEBUG
   
   client.publish(mqtt_t.c_str(),string,true);   // true --> RETAIN
+  //delay(600000);  //Publish every 10 minutes
   delay(300000);  //Publish every 5 minutes
 }
 
@@ -180,7 +181,7 @@ void get_set_broker_ip_port(){
     }
   }
   // if the server's disconnected, stop the client:
-  if (!client.connected()) {
+  if (!http_client.connected()) {
     //Serial.println(http_res); // DEBUG
     
     StaticJsonBuffer<150> jsonBuffer;
