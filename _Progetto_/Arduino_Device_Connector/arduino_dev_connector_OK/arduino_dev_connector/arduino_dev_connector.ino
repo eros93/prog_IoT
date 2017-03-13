@@ -33,8 +33,8 @@ EthernetClient ethClient;
 PubSubClient client(ethClient); //MQTT client to publish
 
 //Analog pin of Temp & Ground_humidity
-int pin_temp = 0;
-int pin_hum = 1;
+int pin_hum = 0;
+int pin_temp = 1;
 
 //POST-DATA
 String rn = "ard1";
@@ -45,8 +45,8 @@ String mqtt_t;
 
 
 /*/////////////////////////////////// SETUP ///////////////////////////////////////////////////////*/
-void setup(){
-  // Open serial communications and wait for port to open:    
+void setup() {
+  // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
@@ -66,7 +66,7 @@ void setup(){
 
 
 /*/////////////////////////////////// LOOP /////////////////////////////////////////////////////*/
-void loop(){
+void loop() {
   //MQTT stuffs
   if (!client.connected()) {
     reconnect();
@@ -80,7 +80,8 @@ void loop(){
   JsonObject& data = jsonBuffer.createObject();
   // Fill the json obj
   data["rn"] = rn;
-  data["hum_gr"] = analogRead(pin_hum);
+  //data["hum_gr"] = analogRead(pin_hum);
+  data["hum_gr"] = ground_hum(pin_hum);
   data["un_hum"] = "%";
   data["temp"] = analogRead(pin_temp);
   data["un_temp"] = "°C";
@@ -88,8 +89,8 @@ void loop(){
   char string[100];                       //DEBUG
   data.printTo(string, sizeof(string));   //DEBUG
   Serial.println(string);                 //DEBUG
-  
-  client.publish(mqtt_t.c_str(),string,true);   // true --> RETAIN
+
+  client.publish(mqtt_t.c_str(), string, true); // true --> RETAIN
   //delay(600000);  //Publish every 10 minutes
   delay(300000);  //Publish every 5 minutes
 }
@@ -100,28 +101,36 @@ void loop(){
 
 
 /*/////////////////////////////////// FUNCTIONS ///////////////////////////////////////////////////////*/
-
+/*HUMIDITY & TEMPERATURE functions*/
+int ground_hum(int pin) {
+  int reading = analogRead(pin);
+  if (reading < 400) {
+    reading = 400;
+  }
+  int sensorValue = map(reading, 1023, 400, 0, 100);
+  return sensorValue;
+}
 
 /*RESOURCE CATALOG tools & communications*/
-String create_PostData_json(){
-  String ip_s = String(ip[0]) +"."+ String(ip[1]) +"."+ String(ip[2]) +"."+ String(ip[3]);
-  mqtt_t = "sensor/subnet/"+ String(subn) +"/hum_temp";
+String create_PostData_json() {
+  String ip_s = String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
+  mqtt_t = "sensor/subnet/" + String(subn) + "/hum_temp";
   String PostData = "{\"subnet\":\"" + subn + "\",\"mqtt_topic\":\"" + mqtt_t + "\",\"mqtt_role\":\"" + mqtt_r + "\",\"rn\":\"" + rn + "\",\"ip_address\":\"" + ip_s + "\",\"resources\":" + res + "}";
   //Serial.println(PostData);
   return PostData;
 }
 
-void res_cat_registration(String PostData){
+void res_cat_registration(String PostData) {
   // POST request for device registration into resource catalog!
   if (http_client.connect(res_cat, 8080)) {
     Serial.println("Connected to Resource Catalog");  // DEBUG
     // Make a HTTP request:
     http_client.println("POST /res_cat/new_dev HTTP/1.1");
     http_client.print("Host: ");
-    
-    sprintf(res_cat_s,"%d.%d.%d.%d:%d",res_cat[0],res_cat[1],res_cat[2],res_cat[3],res_cat_port);
+
+    sprintf(res_cat_s, "%d.%d.%d.%d:%d", res_cat[0], res_cat[1], res_cat[2], res_cat[3], res_cat_port);
     http_client.println(res_cat_s);
-    
+
     http_client.println("Connection: close");
     http_client.print("Content-Length: ");
     http_client.println(PostData.length());
@@ -130,18 +139,18 @@ void res_cat_registration(String PostData){
     http_client.println();
   }
   else {
-  // if you didn't get a connection to the server:
+    // if you didn't get a connection to the server:
     Serial.println("connection to res_cat failed"); // DEBUG
   }
   delay(1000);
   // if there are incoming bytes available from the server, read and work on them:
   String http_res;
-  while(http_client.available()){
+  while (http_client.available()) {
     char c = http_client.read();
     //Serial.print(c);  //DEBUG
     http_res = http_res + c;
     // Delete HTTP header
-    if(http_res.endsWith("200 OK")){
+    if (http_res.endsWith("200 OK")) {
       Serial.println("Device Registration OK!"); // DEBUG
     }
   }
@@ -152,13 +161,13 @@ void res_cat_registration(String PostData){
   }
 }
 
-void get_set_broker_ip_port(){
+void get_set_broker_ip_port() {
   // GET request to retrieve broker infos
   if (http_client.connect(res_cat, 8080)) {
     Serial.println("Connected to Resource Catalog");  // DEBUG
     // Make a HTTP request:
     http_client.println("GET /res_cat/broker_info HTTP/1.1");
-    sprintf(res_cat_s,"%d.%d.%d.%d:%d",res_cat[0],res_cat[1],res_cat[2],res_cat[3],res_cat_port);
+    sprintf(res_cat_s, "%d.%d.%d.%d:%d", res_cat[0], res_cat[1], res_cat[2], res_cat[3], res_cat_port);
     http_client.print("Host: ");
     http_client.println(res_cat_s);
     http_client.println("Connection: close");
@@ -171,19 +180,19 @@ void get_set_broker_ip_port(){
   delay(1000);
   // if there are incoming bytes available from the server, read and print them:
   String http_res;
-  while(http_client.available()){
+  while (http_client.available()) {
     char c = http_client.read();
     //Serial.print(c);  //DEBUG
     http_res = http_res + c;
     // Delete HTTP header
-    if(http_res.endsWith("\n")){
-      http_res="";
+    if (http_res.endsWith("\n")) {
+      http_res = "";
     }
   }
   // if the server's disconnected, stop the client:
   if (!http_client.connected()) {
     //Serial.println(http_res); // DEBUG
-    
+
     StaticJsonBuffer<150> jsonBuffer;
     JsonObject& data = jsonBuffer.parseObject(http_res);
     if (!data.success()) {
@@ -191,7 +200,7 @@ void get_set_broker_ip_port(){
       return;
     }
     String broker_s = data["broker_ip"];
-    IPAddress broker(broker_s.substring(0,3).toInt(),broker_s.substring(4,7).toInt(),broker_s.substring(8,9).toInt(),broker_s.substring(10,13).toInt());
+    IPAddress broker(broker_s.substring(0, 3).toInt(), broker_s.substring(4, 7).toInt(), broker_s.substring(8, 9).toInt(), broker_s.substring(10, 13).toInt());
     broker_port = data["broker_port"];
     setTime(data["timestamp"]); // set system time to one obtained from json
     Serial.print("Broker: ");
@@ -214,7 +223,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i=0;i<length;i++) {
+  for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
