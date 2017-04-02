@@ -16,7 +16,7 @@ if __name__ == "__main__":
 	}
 	cherrypy.tree.mount(ResourceCatalog(1), '/res_cat', conf)
 	#cherrypy.server.socket_host = '10.42.0.1'
-	#cherrypy.server.socket_host = '192.168.1.70'
+	#cherrypy.server.socket_host = '192.168.1.71'
 	cherrypy.server.socket_host = '0.0.0.0'
 	cherrypy.engine.start()
 	cherrypy.engine.block()

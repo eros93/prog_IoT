@@ -24,6 +24,8 @@ class ResourceCatalog(object):
 		self.lat = self.rc_obj["latitude"]
 		self.lng = self.rc_obj["longitude"]
 		self.weath_adpt_out_topic = self.rc_obj["weath_mqtt_out_topic"]
+		self.probprec_th = self.rc_obj["precipprobability_thresh"]
+		self.intprec_th = self.rc_obj["precipintensity_thresh"]
 		#continue here for other elements!!!
 		return
 
@@ -116,6 +118,8 @@ class ResourceCatalog(object):
 			self.obj_tmp["latitude"] = self.lat
 			self.obj_tmp["longitude"] = self.lng
 			self.obj_tmp["mqtt_t_out"] = self.weath_adpt_out_topic
+			self.obj_tmp["probprec_th"] = self.probprec_th
+			self.obj_tmp["intprec_th"] = self.intprec_th
 			return json.dumps(self.obj_tmp)
 
 		else:

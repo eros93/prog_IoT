@@ -21,7 +21,9 @@ class ResourceCatalog(object):
 		self.lat = self.data["latitude"]
 		self.lng = self.data["longitude"]
 		self.mqtt_t_out = self.data["mqtt_t_out"]
-		print "\n\tLocaltion infos correctly retrieved..."
+		self.probprec_th = self.data["probprec_th"]
+		self.intprec_th = self.data["intprec_th"]
+		print "\n\tLocation & Weather infos correctly retrieved..."
 		return
 
 	def get_broker_info(self):
@@ -34,7 +36,7 @@ class ResourceCatalog(object):
 
 
 class WeatherInfo(object):
-	"""Core class, works as adaptor for Dark Sky Weather API.
+	""" Core class, works as adaptor for Dark Sky Weather API.
 	Produce JSON strings to be sent """
 
 	def __init__(self, api_key, lat, lng):

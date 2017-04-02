@@ -12,6 +12,10 @@ Example:
 {"request": "tomorrow_forecast", "summary": "Partially cloudly in the afternoon", "sunrise":"1491109752", "sunset":"1491155932", "watering_flag":"True"}
 
 
+watering_flag ==> "True": watering process in needed
+			  ==> "False": watering process in NOT needed
+
+
 ####################################
 ENRICO NOTES
 ####################################

@@ -40,5 +40,5 @@
     "weath_mqtt_out_topic": "weather/forecast",
     "usedwater_topic": "infos/usedwater",
     "precipprobability_thresh": 0.65,
-    "precipintensity_thresh": 0.35
+    "precipintensity_thresh": 0.30
 }
