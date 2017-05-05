@@ -38,7 +38,7 @@
     "longitude": 7.660051,
     "weath_api_key": "c61a2cd84bc2ec6fea75e59362e61c9c",
     "weath_mqtt_out_topic": "weather/forecast",
-    "usedwater_topic": "infos/usedwater",
+    "usedwater_topic": "irrigation_control/time",
     "precipprobability_thresh": 0.65,
     "precipintensity_thresh": 0.30
 }

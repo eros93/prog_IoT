@@ -21,8 +21,11 @@ GET request:
 
 	- Informations useful for weather adaptor: GET localhost:8080/res_cat/weather_adaptor
 	--> return JSON string
-		{"latitude": x, "api_key": "...", "request": "loc_info", "longitude": x, "mqtt_t_out":"..."}
+		{"latitude": x, "api_key": "...", "probprec_th": x, "intprec_th": x, "request": "loc_info", "longitude": x, "mqtt_t_out":"...", }
 
+	- Informations about threshols : #GET localhost:8080/res_cat/thresholds
+	--> return JSON string
+		{"usedwater_topic": "...", "probprec_th": x, "request": "thresholds", "intprec_th": x}
 
 
 POST request:

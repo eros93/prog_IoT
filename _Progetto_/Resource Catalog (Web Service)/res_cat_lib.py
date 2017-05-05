@@ -26,6 +26,7 @@ class ResourceCatalog(object):
 		self.weath_adpt_out_topic = self.rc_obj["weath_mqtt_out_topic"]
 		self.probprec_th = self.rc_obj["precipprobability_thresh"]
 		self.intprec_th = self.rc_obj["precipintensity_thresh"]
+		self.usedwater_topic = self.rc_obj["usedwater_topic"]
 		#continue here for other elements!!!
 		return
 
@@ -121,6 +122,17 @@ class ResourceCatalog(object):
 			self.obj_tmp["probprec_th"] = self.probprec_th
 			self.obj_tmp["intprec_th"] = self.intprec_th
 			return json.dumps(self.obj_tmp)
+
+		#GET localhost:8080/res_cat/thresholds
+		elif uri[0]=="thresholds":
+			self.read_rc()
+			self.obj_tmp = {}
+			self.obj_tmp["request"] = uri[0]
+			self.obj_tmp["usedwater_topic"] = self.usedwater_topic
+			self.obj_tmp["probprec_th"] = self.probprec_th
+			self.obj_tmp["intprec_th"] = self.intprec_th
+			return json.dumps(self.obj_tmp)
+
 
 		else:
 			raise NameError("Not a valid URI command!")
