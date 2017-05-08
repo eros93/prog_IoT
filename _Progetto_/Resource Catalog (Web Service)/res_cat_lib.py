@@ -36,7 +36,7 @@ class ResourceCatalog(object):
 			if (x["rn"]!=rn)and(x["ip_address"]!=ip_add):
 				continue
 			else:
-				raise NameError("It is not possible to insert a new device with same <resource_name> or <IP> of an existing one!")
+				raise NameError("It is not possible to insert a new device with same <resource_name> and <IP> of an existing one!")
 
 		obj={}
 		obj["rn"] = rn
