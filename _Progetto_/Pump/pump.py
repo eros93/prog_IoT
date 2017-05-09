@@ -6,13 +6,6 @@ import json
 #import RPi.GPIO as GPIO
 
 
-##############################
-# Get Broker Infos Funciton
-##############################
-
-
-
-
 ##################
 # Pump class
 ##################
@@ -104,7 +97,7 @@ class Pump():
 				print("\n\tRelay set on ON status")
 				#GPIO.output(self.relay_pin, GPIO.HIGH)
 			else:
-				raise NameError("Relay commands can be only \"OFF\" or \"ON\"")
+				raise NameError("Pump commands can be only \"OFF\" or \"ON\"")
 
 
 
