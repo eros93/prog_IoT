@@ -3,7 +3,6 @@ import requests
 
 class TelegramBot():
 
-
     def __init__(self,url):
         self.url=url
 
@@ -54,11 +53,11 @@ class TelegramBot():
         return json.dumps(reply_markup)
 
 
-
 def get_json_from_url(url):
     content = get_url(url)
     js = json.loads(content)
     return js
+
 
 def get_url(url):
     response = requests.get(url)

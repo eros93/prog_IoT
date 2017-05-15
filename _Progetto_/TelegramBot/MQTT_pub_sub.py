@@ -2,6 +2,7 @@
 import paho.mqtt.client as mqtt
 import json
 
+
 class MySubscriber():
 
 	def __init__(self, clientid):
