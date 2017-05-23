@@ -4,7 +4,7 @@ import json
 import time
 
 class Irrigation_Control(object):
-    """Control checking everyday if it is necessary to irrigate and in case it is
+    """Control  checking everyday if it is necessary to irrigate and in case it is
     true it opens the irrigation pump at the right time for the right amount."""
 
     def __init__(self):
