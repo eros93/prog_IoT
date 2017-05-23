@@ -90,10 +90,10 @@ class Pump():
 	def notify(self, topic, msg):
 		if topic == self.mqtt_t:
 			#payload = json.loads(msg)
-			if msg == "OFF":
+			if msg.upper() == "OFF":
 				print("\n\tRelay set on OFF status")
 				#GPIO.output(self.relay_pin, GPIO.LOW)
-			elif msg == "ON":
+			elif msg.upper() == "ON":
 				print("\n\tRelay set on ON status")
 				#GPIO.output(self.relay_pin, GPIO.HIGH)
 			else:
