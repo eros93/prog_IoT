@@ -1,39 +1,53 @@
-import mqtt_client
+from mqtt_client import MQTTClient
 import requests
 import json
 import time
+import datetime
 
 class Irrigation_Control(object):
-    """Control  checking everyday if it is necessary to irrigate and in case it is
-    true it opens the irrigation pump at the right time for the right amount."""
+    """Control checks if it is necessary to irrigate and in case it is
+    true it opens the irrigation pump at the right time for how much time it is needed."""
 
     def __init__(self):
         self.broker = {}
-        self.irrigation_time = 0
+        self.irrigation_time = 0.0
+        self.pump_topic = ''
+        self.watering_flag = False
+        self.sunset_time = '18:00'
+        self.humidity = 0.0
+        self.temperature = 0.0
+        self.weather_topic = ''
+        self.humtemp_topic = ''
+        self.hum_th = 0.0
+        self.temp_th = 0.0
 
     def get_broker_infos(self):
         """Gets the broker ip and port through a web request."""
-        r = requests.get('http://localhost:8080/res_cat/broker_info')
+        #print "I'm in get_broker_infos"
+
+        r = requests.get('http://192.168.1.71:8080/res_cat/broker_info')
         infos = json.loads(r.text)
         self.broker['ip'] = infos['broker_ip']
         self.broker['port'] = infos['broker_port']
 
-    def retrieve_broker_infos(self):
-        """Retrieves broker information in json format"""
-        return self.broker
-
     def get_weather_and_water_topic(self):
         """Retrieves thresholds for humidity and temperature."""
-        r = requests.get('http://localhost:8080/res_cat/all')
+        #print "I'm in get_weather_and_water_topic"
+
+        r = requests.get('http://192.168.1.71:8080/res_cat/all')
         catalog = json.loads(r.text)
         output = {}
         output['weather'] = catalog['weath_mqtt_out_topic']
         output['water'] = catalog['usedwater_topic']
+        output['moisture'] = catalog['moisture_thresh']
+        output['water_temp'] = catalog['watertemp_thresh']
         return output
 
     def get_device_topic(self, device_name):
         """Retrieves the mqtt topic for a certain device"""
-        r = requests.get('http://localhost:8080/res_cat/dev_list')
+        #print "I'm in get_device_topic"
+
+        r = requests.get('http://192.168.1.71:8080/res_cat/dev_list')
         devices_list = json.loads(r.text)
         for i in range(len(devices_list)):
             a = devices_list[i]
@@ -43,52 +57,90 @@ class Irrigation_Control(object):
 
     def mqtt_client_creation(self):
         """Creates an mqtt client object inside the irrigation object."""
-        self.mqtt = MQTTClient(self.broker)
+        #print "I'm in mqtt_client_creation"
+        self.mqtt = MQTTClient("irrigation", self.broker, self)
 
-#IMPORTANT: TO CHANGE! IRRIGATION NEEDS TO START AT SUNSET TIME
-    def start_watering(self, humidity_topic, weather_topic, time_topic, hum_th, temp_th):
-        """It's a cycle taking everyday information from the weather forecast,
-        checks if there is need to water and retrieves the sunset time for the
-        day. If there is need to water, it checks humidity and temperature to
-        know the right moment to irrigate."""
+    def notify(self, topic, payload):
+        """Function called every time that a message is received as subscriber"""
+
+        print ("Notify function on topic: "+topic)
+        if (topic == self.weather_topic):
+            # print "I'm in notify topic weather"
+            msg = json.loads(payload)
+            
+            self.watering_flag = False
+            if (msg["watering_flag"]=="True"):
+                self.watering_flag = True
+                self.sunset_time = datetime.datetime.fromtimestamp(int(msg['sunset'])).strftime('%H:%M')    # from unix timestamp --> format h:m
+                #self.sunset_time = msg['sunset']   # only unix timestamp
+                #print self.sunset_time
+                time.sleep(5)
+
+        elif (topic == self.humtemp_topic):
+            # update the ground humidity and water temperature measurements
+            hum_temp = json.loads(payload)
+            self.humidity = hum_temp['hum_gr']
+            #print self.humidity
+            self.temperature = hum_temp['temp']
+            #print self.temperature
+
+    def start_watering(self, humtemp_topic, weather_topic, time_topic, hum_th, temp_th):
+        """It's a function which checks if there is need to water. If there is need to water, it checks humidity
+        and temperature to know the right moment to irrigate, then it acts on irrigation pump.
+        Moreover it measures how much the watering has lasted."""
+
+        #print "I'm in start_watering"
+        self.weather_topic = weather_topic
+        self.humtemp_topic = humtemp_topic
+
         self.mqtt.start()
-        #taking the sunset and news about irrigation
+
         self.mqtt.mySubscribe(weather_topic, 2)
-        msg = json.loads(self.mqtt.message)
-        self.mqtt.stop()
-        watering_flag = msg['watering_flag']
-        sunset_time = msg['sunset']
-        if watering_flag == True:   # i need to irrigate
-            self.mqtt.start()
-            self.mqtt.mySubscribe(humidity_topic)
-            hum_temp = json.loads(self.mqtt.message)
-            self.mqtt.stop()
-            counter = 0
-            humidity = hum_temp['humidity']
-            temperature = hum_temp['temperature']
-            if humidity < hum_th:      # i irrigate
-                while (temperature < temp_th and c <= 6):    #cycling until reaching the right temperature (or counter goes off)
-                    time.sleep(600)  # 10 minutes of pause
+        time.sleep(10)
+        self.mqtt.mySubscribe(humtemp_topic, 2)
+        time.sleep(10)
+
+        print "out_pump is set OFF at beginning"
+        self.mqtt.myPublish(self.pump_topic, 'OFF')
+        if self.watering_flag == True:    #irrigation possible based on weather forecasts
+            print "watering flag TRUE"
+            c = 0
+            start_flag = True   # to start the timecounter only once
+            while self.humidity < hum_th:     # check periodically the moisture
+                print "moisture is too low"
+                # wait for temperature reaches threshold or or counter goes off = 1 hr
+                if (self.temperature < temp_th and c <= 6):
+                    print "water temperature not yet ready to irrigate"
+                    time.sleep(600)  # 10 min
                     c = c+1
-                    self.mqtt.start()
-                    self.mqtt.mySubscribe(humidity_topic)
-                    self.mqtt.stop()
-                    hum_temp = json.loads(self.mqtt.message)
-                    temperature = hum_temp['temperature']
-                self.mqtt.start()
-                self.mqtt.myPublish('irrigation/control', 'on')
-                start = time.time()
-                self.mqtt.notifier = False
-                while (humidity < hum_th):
-                    while self.mqtt.notifier == False:
-                        pass
-                    self.mqtt.mySubscribe(humidity_topic)
-                    hum_temp = json.loads(self.mqtt.message)
-                    humidity = hum_temp['humidity']
-                    self.mqtt.notifier = False
-                self.mqtt.myPublish('irrigation/control', 'off')
-                self.mqtt.stop()
-                stop = time.time()
+                elif (start_flag == True):
+                    print "water is OK so out_pump is set ON"
+                    self.mqtt.myPublish(self.pump_topic, 'ON')
+                    #self.mqtt.myPublish("actuator/subnet/1/out_pump", 'ON')
+                    start = time.time()
+                    start_flag = False
+                else:
+                    print "wait 100 sec to check again the measured ground humidity" #DEBUG
+                    time.sleep(100) #DEBUG
+                    #print "wait 5 min to check again the measured ground humidity"
+                    #time.sleep(300)     # wait 5 min to compare the measured ground humidity
+            # humidity threshold reached so the irrigation pump os switched off
+            print "out_pump is set OFF"
+            self.mqtt.myPublish(self.pump_topic, 'OFF')
+            #self.mqtt.myPublish("actuator/subnet/1/out_pump", 'OFF')
+            stop = time.time()
+            try:
                 self.irrigation_time = stop - start
-        self.mqtt.myPublish(time_topic, str(self.irrigation_time), 2)   # IMPORTANT: time is measured in ticks
-        self.mqtt.stop
+                try:
+                    self.mqtt.myPublish(time_topic, str(self.irrigation_time), 2)   # IMPORTANT: time is measured in ticks
+                    print ("watering duration "+str(self.irrigation_time))
+                except (TypeError):
+                    print ("Impossible to publish on "+time_topic)
+                    pass
+            except (UnboundLocalError):
+                print "time of start not exists because irrigation doesn't even start today"
+                pass
+            self.mqtt.stop()
+        else:
+            print "watering flag FALSE --> DO NOTHING"
+        return

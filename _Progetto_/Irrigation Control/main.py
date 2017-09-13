@@ -1,35 +1,35 @@
-import irrigation_control
+from irrigation_control import Irrigation_Control
 from datetime import datetime
 import schedule
+import time
 
-def do_this():
-    irrigation = Irrigation_Control()   # creation of the irrigation control
+
+irrigation = Irrigation_Control()   # creation of the irrigation control object
+
+def irrigation_routine():
+    print ("Irrigation routine started at %s" %time.strftime("%H:%M"))
     irrigation.get_broker_infos()       # get all the infos about the broker
     irrigation.mqtt_client_creation()   # creation of the mqtt publisher and subscriber
     weather_time = irrigation.get_weather_and_water_topic()
     weather_topic = weather_time['weather']
     time_topic = weather_time['water']
-    humidity_topic = irrigation.get_device_topic('ard1')
-    irrigation.start_watering(humidity_topic, weather_topic, time_topic, hum_th, temp_th)
+    hum_th = weather_time['moisture']    # ground humidity threshold
+    temp_th = weather_time['water_temp']   # water temperature threshold
+    humtemp_topic = irrigation.get_device_topic('ard1')
+    irrigation.pump_topic = irrigation.get_device_topic('pump1')
+    irrigation.start_watering(humtemp_topic, weather_topic, time_topic, hum_th, temp_th)
+    
+    schedule.clear()
+    schedule.every().day.at(irrigation.sunset_time).do(irrigation_routine)
+    print "RE-schedule.every().day.at(%s).do(irrigation_routine)" %irrigation.sunset_time
 
-hum_th = 0.3            # humidity threshold
-temp_th = 10            # temperature threshold
-total_days = 100        # for simplicity: how many days I want to keep the program running
+    return
 
-# x=date.today()
-# c = 0
-# while c < total_days:
-#     y=x.replace(day=x.day+1, hour=12)    # tomorrow at 12.00
-#     delta_t=y-x
-#     secs=delta_t.seconds+1
-#     t = Timer(secs, do_this)
-#     t.start()
-#     c = c+1
-#     x = datetime.today()
 
-do_this()
+if  __name__ == "__main__":
 
-schedule.every().day.at("12:00").do(do_this)
-while True:
-    schedule.run_pending()
-    time.sleep(10)
+    irrigation_routine()    #DEBUG
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)

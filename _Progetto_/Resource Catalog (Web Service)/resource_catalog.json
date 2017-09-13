@@ -3,16 +3,6 @@
     "broker_port": 1883,
     "dev_list": [
         {
-            "ip_address": "192.168.1.100",
-            "mqtt_role": "s",
-            "mqtt_topic": "actuator/subnet/1/in_pump",
-            "resources": [
-                "in_pump"
-            ],
-            "rn": "rasp2",
-            "subnet": "1"
-        },
-        {
             "ip_address": "192.168.1.151",
             "mqtt_role": "s",
             "mqtt_topic": "actuator/subnet/1/out_pump",
@@ -20,6 +10,16 @@
                 "out_pump"
             ],
             "rn": "pump1",
+            "subnet": "1"
+        },
+        {
+            "ip_address": "192.168.1.100",
+            "mqtt_role": "s",
+            "mqtt_topic": "actuator/subnet/1/in_pump",
+            "resources": [
+                "in_pump"
+            ],
+            "rn": "pump2",
             "subnet": "1"
         },
         {
@@ -38,6 +38,8 @@
     "longitude": 7.660051,
     "precipintensity_thresh": 0.3,
     "precipprobability_thresh": 0.65,
+    "moisture_thresh": 45,
+    "watertemp_thresh": 15,
     "usedwater_topic": "irrigation_control/time",
     "weath_api_key": "c61a2cd84bc2ec6fea75e59362e61c9c",
     "weath_mqtt_out_topic": "weather/forecast"

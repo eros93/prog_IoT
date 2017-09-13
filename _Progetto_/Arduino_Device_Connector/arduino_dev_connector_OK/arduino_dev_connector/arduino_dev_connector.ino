@@ -92,7 +92,10 @@ void loop() {
 
   client.publish(mqtt_t.c_str(), string, true); // true --> RETAIN
   //delay(600000);  //Publish every 10 minutes
-  delay(300000);  //Publish every 5 minutes
+  //delay(300000);  //Publish every 5 minutes
+  //delay(120000);  //Publish every 2 minutes
+  delay(60000);  //Publish every minute
+  //delay(1000);  //Publish every5 second DEBUG
 }
 
 
@@ -123,7 +126,7 @@ String create_PostData_json() {
 void res_cat_registration(String PostData) {
   // POST request for device registration into resource catalog!
   if (http_client.connect(res_cat, 8080)) {
-    Serial.println("Connected to Resource Catalog");  // DEBUG
+    Serial.println("Connected to Resource Catalog for registration");  // DEBUG
     // Make a HTTP request:
     http_client.println("POST /res_cat/new_dev HTTP/1.1");
     http_client.print("Host: ");
@@ -164,7 +167,7 @@ void res_cat_registration(String PostData) {
 void get_set_broker_ip_port() {
   // GET request to retrieve broker infos
   if (http_client.connect(res_cat, 8080)) {
-    Serial.println("Connected to Resource Catalog");  // DEBUG
+    Serial.println("Connected to Resource Catalog to get broker infos");  // DEBUG
     // Make a HTTP request:
     http_client.println("GET /res_cat/broker_info HTTP/1.1");
     sprintf(res_cat_s, "%d.%d.%d.%d:%d", res_cat[0], res_cat[1], res_cat[2], res_cat[3], res_cat_port);

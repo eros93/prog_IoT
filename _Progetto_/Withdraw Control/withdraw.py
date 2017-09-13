@@ -4,7 +4,7 @@ import json
 import paho.mqtt.client as mqtt
 
 ############################################################
-# Withdraw Classes
+# Withdraw Class
 ############################################################
 
 class Withdraw():
@@ -33,6 +33,7 @@ class Withdraw():
 				return
 
 	def run(self):
+		self.stop_flag = False
 		self.mqtt_sub_weather.start(self.broker_ip, self.broker_port)
 		self.mqtt_sub_weather.mySubscribe(self.topic_weather)
 
@@ -44,30 +45,41 @@ class Withdraw():
 	def notify(self, topic, payload):
 		
 		if (topic == self.topic_weather):
-			#print "Sono in notify topic weather"
+			#print "I'm in notify topic weather"
 			msg = json.loads(payload)
 			
 			if (msg["watering_flag"]=="True"):
+				#print "watering_flag is True"
 				self.mqtt_sub_usedwater.start(self.broker_ip, self.broker_port)
 				self.mqtt_sub_usedwater.mySubscribe(self.topic_usedwater)
 				time.sleep(3)
+			else:
+				print ("Publish pump OFF because watering_flag is False")
+				pub = MyPublisher("Withdraw")
+				pub.start(self.broker_ip,self.broker_port)
+				time.sleep(2)
+				pub.myPublish(self.topic_inpump, "OFF")
+				pub.stop()
+				#pub.client_mqtt.disconnect()
+				self.stop_flag = True
 
 			self.mqtt_sub_weather.stop()
 			#self.mqtt_sub_weather.client_mqtt.disconnect()
 	
 		elif (topic == self.topic_usedwater):
-			#print "Sono in notify topic usedwater"
+			#print "I'm in notify topic usedwater"
 			self.mqtt_sub_usedwater.stop()
 			#self.mqtt_sub_usedwater.client_mqtt.disconnect()
-			#print "Publish pump ON for time "+payload
+			print ("Publish pump ON for "+payload+" seconds")
 			pub = MyPublisher("Withdraw")
 			pub.start(self.broker_ip,self.broker_port)
 			time.sleep(2)
 			pub.myPublish(self.topic_inpump, "ON")
-			time.sleep(int(payload))
+			time.sleep(int(float(payload)))
 			pub.myPublish(self.topic_inpump, "OFF")
 			pub.stop()
 			#pub.client_mqtt.disconnect()
+			self.stop_flag = True
 		return
 
 
@@ -80,7 +92,7 @@ class MyPublisher():
 	def __init__(self, clientid):
 		self.client_mqtt = mqtt.Client(clientid, False)
 
-		self.client_mqtt.on_connect = self.myOnConnect
+		#self.client_mqtt.on_connect = self.myOnConnect
 		self.client_mqtt.on_publish = self.myOnPublish
 		return
 
@@ -102,8 +114,8 @@ class MyPublisher():
 		return
 
 	def start(self, broker, port):
-		self.broker=broker
-		self.port=port
+		self.broker = broker
+		self.port = port
 		self.client_mqtt.connect(self.broker,self.port)
 		self.client_mqtt.loop_start()
 		return
@@ -121,7 +133,7 @@ class MySubscriber():
 
 		self.client_mqtt = mqtt.Client(clientid, False)
 
-		self.client_mqtt.on_connect = self.myOnConnect
+		#self.client_mqtt.on_connect = self.myOnConnect
 		self.client_mqtt.on_message = self.myOnMessage
 
 
