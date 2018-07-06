@@ -21,8 +21,18 @@ class TelegramBot():
         url_req = self.url + "getUpdates?timeout=1"
         if offset:
             url_req += "&offset={}".format(offset)
-        self.updates = get_json_from_url(url_req)
-        #    print prettyprint_json(js)
+
+        ### try to avoid Exception given from bad answer from Telegram APIs
+        try:
+            self.updates = get_json_from_url(url_req)
+        except Exception:
+            tmp = {}
+            tmp["ok"] = True
+            tmp["result"] = [];
+            self.updates = json.dumps(content)
+
+        
+        # print self.prettyprint_json(self.updates)
         return self.updates
 
     def get_last_chat_id_and_text(self):
