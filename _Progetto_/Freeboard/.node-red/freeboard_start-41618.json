@@ -1,0 +1,149 @@
+{
+	"version": 1,
+	"allow_edit": true,
+	"plugins": [],
+	"panes": [
+		{
+			"title": "Water temperature",
+			"width": 1,
+			"row": {
+				"3": 11
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"value": "datasources[\"HUMTEMP\"][\"temp\"]",
+						"units": "°C",
+						"min_value": 0,
+						"max_value": 100
+					}
+				}
+			]
+		},
+		{
+			"title": "Ground humidity",
+			"width": 1,
+			"row": {
+				"3": 19
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"value": "datasources[\"HUMTEMP\"][\"hum_gr\"]",
+						"units": "%",
+						"min_value": 0,
+						"max_value": 100
+					}
+				}
+			]
+		},
+		{
+			"title": "Withdraw Pump Status",
+			"width": 1,
+			"row": {
+				"3": 27,
+				"4": 5
+			},
+			"col": {
+				"3": 1,
+				"4": 2
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "text_widget",
+					"settings": {
+						"size": "regular",
+						"value": "datasources[\"INPUMP\"]",
+						"animate": true
+					}
+				}
+			]
+		},
+		{
+			"title": "Irrigation Pump Status",
+			"width": 1,
+			"row": {
+				"3": 31,
+				"4": 9
+			},
+			"col": {
+				"3": 1,
+				"4": 2
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "text_widget",
+					"settings": {
+						"size": "regular",
+						"value": "datasources[\"OUTPUMP\"]",
+						"animate": true
+					}
+				}
+			]
+		},
+		{
+			"width": 1,
+			"row": {
+				"3": 1
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "google_map",
+					"settings": {
+						"lat": "datasources[\"lat\"]",
+						"lon": "datasources[\"lon\"]"
+					}
+				}
+			]
+		}
+	],
+	"datasources": [
+		{
+			"name": "weather",
+			"type": "weather",
+			"settings": {}
+		},
+		{
+			"name": "lat",
+			"type": "Latitude",
+			"settings": {}
+		},
+		{
+			"name": "lon",
+			"type": "Longitude",
+			"settings": {}
+		},
+		{
+			"name": "INPUMP",
+			"type": "in_pump",
+			"settings": {}
+		},
+		{
+			"name": "OUTPUMP",
+			"type": "out_pump",
+			"settings": {}
+		},
+		{
+			"name": "HUMTEMP",
+			"type": "humTemp",
+			"settings": {}
+		}
+	],
+	"columns": 3
+}

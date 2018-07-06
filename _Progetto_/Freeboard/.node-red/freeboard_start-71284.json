@@ -1,0 +1,44 @@
+{
+	"version": 1,
+	"allow_edit": true,
+	"plugins": [],
+	"panes": [
+		{
+			"width": 1,
+			"row": {
+				"3": 1
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "google_map",
+					"settings": {
+						"lat": "datasources[\"lat\"]",
+						"lon": "datasources[\"lon\"]"
+					}
+				}
+			]
+		}
+	],
+	"datasources": [
+		{
+			"name": "weather",
+			"type": "weather",
+			"settings": {}
+		},
+		{
+			"name": "lat",
+			"type": "Latitude",
+			"settings": {}
+		},
+		{
+			"name": "lon",
+			"type": "Longitude",
+			"settings": {}
+		}
+	],
+	"columns": 3
+}
