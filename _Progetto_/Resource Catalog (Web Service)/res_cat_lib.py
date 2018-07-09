@@ -27,6 +27,8 @@ class ResourceCatalog(object):
 		self.probprec_th = self.rc_obj["precipprobability_thresh"]
 		self.intprec_th = self.rc_obj["precipintensity_thresh"]
 		self.usedwater_topic = self.rc_obj["usedwater_topic"]
+		self.watertemp_th = self.rc_obj["watertemp_thresh"]
+		self.moisture_th = self.rc_obj["moisture_thresh"]
 		#continue here for other elements!!!
 		return
 
@@ -68,7 +70,7 @@ class ResourceCatalog(object):
 			del self.rc_obj["dev_list"][hit]
 			self.rc = open("./resource_catalog.json", "w")
 			self.rc.truncate()
-			self.rc.write(json.dumps(self.rc_obj))
+			self.rc.write(json.dumps(self.rc_obj, sort_keys=True, indent=4, separators=(',', ': ')))
 			self.rc.close()
 			self.read_rc()
 			return json.dumps(self.dev_list)
@@ -86,10 +88,27 @@ class ResourceCatalog(object):
 				continue
 		raise NameError("Something wrong during UPDATING the device infos!")
 
+	def update_thresholds(self, threshold, value):
+		self.read_rc()
+		rc = open("./resource_catalog.json", "r")
+		rc_all = rc.read()
+		rc.close()
+		rc_obj = json.loads(rc_all)
+
+		if(rc_obj.has_key(threshold)):
+			rc_obj[threshold] = float(value)
+			rc = open("./resource_catalog.json", "w")
+			rc.truncate()
+			rc.write(json.dumps(rc_obj, sort_keys=True, indent=4, separators=(',', ': ')))
+			rc.close()
+			self.read_rc()
+			return True
+		else:
+			return False
+			
 	
 	def GET(self, *uri, **params):
 		
-
 		#GET localhost:8080/res_cat/all
 		if uri[0]=="all":
 			self.read_rc()
@@ -129,6 +148,8 @@ class ResourceCatalog(object):
 			self.obj_tmp = {}
 			self.obj_tmp["request"] = uri[0]
 			self.obj_tmp["usedwater_topic"] = self.usedwater_topic
+			self.obj_tmp["moisture_th"] = self.moisture_th
+			self.obj_tmp["watertemp_th"] = self.watertemp_th
 			self.obj_tmp["probprec_th"] = self.probprec_th
 			self.obj_tmp["intprec_th"] = self.intprec_th
 			return json.dumps(self.obj_tmp)
@@ -167,6 +188,47 @@ class ResourceCatalog(object):
 				return self.update_dev_resources(obj["rn"],obj["ip_address"],obj["mqtt_topic"],obj["resources"],obj["subnet"],obj["mqtt_role"])
 			raise NameError("Json structure of input data is not correct!")
 		
+		#PUT localhost:8080/res_cat/upd_thresholds
+		#Body --> JSON { "moisture" : float, "watertemp" : float, "precipint" : float, "precipprob" : float }
+		#must be 'application/json' !!!
+		elif uri[0]=="upd_thresholds":
+			json_input = cherrypy.request.body.read()
+			obj = json.loads(json_input)
+			
+			tmp_params = {}
+			if (obj.has_key("moisture")):
+				tmp_params["moisture_thresh"] = obj["moisture"]
+
+			if(obj.has_key("watertemp")):
+				tmp_params["watertemp_thresh"] = obj["watertemp"]
+
+			if(obj.has_key("precipint")):
+				tmp_params["precipintensity_thresh"] = obj["precipint"]
+						
+			if(obj.has_key("precipprob")):
+				tmp_params["precipprobability_thresh"] = obj["precipprob"]
+			
+			# check if almost one obj element was correct
+			if tmp_params:
+				# for each parameter correct, execute the update
+				for key in tmp_params:
+					if(self.update_thresholds(key,tmp_params[key])):
+						print("Updating %s OK!" %(key))
+					else:
+						print("Updating %s FAILED!" %(key))
+						raise NameError("Updating %s FAILED!" %(key))
+				
+				self.read_rc()
+				obj_tmp = {}
+				obj_tmp["request"] = uri[0]
+				obj_tmp["moisture"] = self.moisture_th
+				obj_tmp["watertemp"] = self.watertemp_th
+				obj_tmp["precipint"] = self.intprec_th
+				obj_tmp["precipprob"] = self.probprec_th
+				return json.dumps(obj_tmp)
+
+			else:
+				raise NameError("No parameter was correct!")
 		else:
 			raise NameError("Not a valid URI command!")
 

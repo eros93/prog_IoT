@@ -6,7 +6,7 @@ import requests
 import json
 import os
 
-TOKEN = "294196450:AAEv98AIlpUQ9Kb6QXD-RelIr2QVh8PI6YM"
+TOKEN = "294196450:AAEdDwOslUfvqvw4uB1ovsDehGtirav0VDY"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 res_cat_ip = "192.168.1.73"
 res_cat_port = "8080"
@@ -158,9 +158,17 @@ sub.start(broker_ip, broker_port)
 
 last_update_id = None
 while True:
-    updates = Bot.get_updates(last_update_id)
-    if len(updates["result"]) > 0:
-        last_update_id = Bot.get_last_update_id() + 1
-        #Bot.prettyprint_json(updates)
-        handle_updates(Bot, updates, sub)
-    time.sleep(0.5)
+    try:
+        updates = Bot.get_updates(last_update_id)
+        if len(updates["result"]) > 0:
+        ### try to avoid Exception given from bad answer from Telegram APIs       
+            last_update_id = Bot.get_last_update_id() + 1
+            handle_updates(Bot, updates, sub)
+            #Bot.prettyprint_json(updates)
+        time.sleep(0.5)
+    except Exception:
+        print("Errore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        time.sleep(0.5)
+        continue
+                  
+        

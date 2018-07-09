@@ -2,26 +2,6 @@
     "broker_ip": "192.168.1.151",
     "broker_port": 1883,
     "dev_list": [
-        {
-            "ip_address": "192.168.1.151",
-            "mqtt_role": "s",
-            "mqtt_topic": "actuator/subnet/1/out_pump",
-            "resources": [
-                "out_pump"
-            ],
-            "rn": "pump1",
-            "subnet": "1"
-        },
-        {
-            "ip_address": "192.168.1.100",
-            "mqtt_role": "s",
-            "mqtt_topic": "actuator/subnet/1/in_pump",
-            "resources": [
-                "in_pump"
-            ],
-            "rn": "pump2",
-            "subnet": "1"
-        }
     ],
     "latitude": 45.063306,
     "longitude": 7.660051,

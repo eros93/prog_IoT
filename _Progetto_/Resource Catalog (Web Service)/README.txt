@@ -25,7 +25,7 @@ GET request:
 
 	- Informations about thresholds : #GET localhost:8080/res_cat/thresholds
 	--> return JSON string
-		{"usedwater_topic": "...", "probprec_th": x, "request": "thresholds", "intprec_th": x}
+		{"usedwater_topic": "...", "moisture_th": x, "watertemp_th": x, "probprec_th": x, "request": "thresholds", "intprec_th": x}
 
 
 POST request:
@@ -42,6 +42,13 @@ PUT request:
 											with body --> JSON {"rn":"...", "ip_address": "x.x.x.x", "mqtt_topic":"...", "resources": ["...","..."], 							"subnet":"...", "mqtt_role":"..."}
 	--> return the updated info of the related device into a JSON 
 		{"rn":"...", "ip_address": "x.x.x.x", "mqtt_topic":"...", "resources": ["...","..."], "subnet":"...", "mqtt_role":"..."}
+
+	- Update the thresholds: PUT localhost:8080/res_cat/upd_thresholds
+											with body --> JSON {
+												"moisture" : float, "watertemp" : float, "precipint" : float, "precipprob" : float
+											}
+	--> return the thresholds values 
+		{"request":"upd_thresholds", "moisture" : x, "watertemp" : x, "precipint" : x, "precipprob" : x }
 
 
 DELETE request:
