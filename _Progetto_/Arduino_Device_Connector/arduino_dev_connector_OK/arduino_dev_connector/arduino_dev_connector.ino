@@ -83,7 +83,8 @@ void loop() {
   //data["hum_gr"] = analogRead(pin_hum);
   data["hum_gr"] = ground_hum(pin_hum);
   data["un_hum"] = "%";
-  data["temp"] = analogRead(pin_temp);
+  data["temp"] = water_temp(pin_temp);
+  //data["temp"] = analogRead(pin_temp);
   data["un_temp"] = "°C";
   data["timestamp"] = now();
   char string[100];                       //DEBUG
@@ -94,13 +95,20 @@ void loop() {
   //delay(600000);  //Publish every 10 minutes
   //delay(300000);  //Publish every 5 minutes
   //delay(120000);  //Publish every 2 minutes
-  delay(60000);  //Publish every minute
-  //delay(1000);  //Publish every5 second DEBUG
+  //delay(60000);  //Publish every minute
+  delay(30000);  //Publish 30 seconds
 }
 
 
 /*/////////////////////////////////// FUNCTIONS ///////////////////////////////////////////////////////*/
 /*HUMIDITY & TEMPERATURE functions*/
+int water_temp(int pin) {
+  int randNumber;
+  randomSeed(analogRead(pin));
+  randNumber = random(10, 31);  // 15 is the threshold
+  return randNumber;
+}
+
 int ground_hum(int pin) {
   int reading = analogRead(pin);
   if (reading < 400) {
