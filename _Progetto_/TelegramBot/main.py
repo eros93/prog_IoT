@@ -7,7 +7,7 @@ import json
 
 TOKEN = "294196450:AAEv98AIlpUQ9Kb6QXD-RelIr2QVh8PI6YM"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
-res_cat_ip = "192.168.1.71"
+res_cat_ip = "192.168.1.73"
 res_cat_port = "8080"
 
 #TODO create a new button for give information on status of tomorrow (rain or not ?)

@@ -96,15 +96,18 @@ def handle_updates(bot, updates, subscriber) :
             #TODO watering topic to finisch -> ask to federica and obj_weather return TRUE -> so make an if to make the correct string
             #text = " Tomorrow the system will be %s , water consumption is about %s " % (obj_weather["watering_flag"], obj_water[""])
             if obj_weather["watering_flag"] == True:
-                text = "Tomorrow watering process is needed"
-                bot.send_message(text,chat,keyboard)
+                text = "Tomorrow watering process is needed. "
             else:
-                text = "Tomorrow watering process is NOT needed"
-                bot.send_message(text,chat,keyboard)
+                text = "Tomorrow watering process is NOT needed. "  
+
+            time_water_open = obj_water
+            consumption_liter = time_water_open * 0.028
+            text += "\nThe water consumption was about %s liters. " % str(round(consumption_liter,2))
+            bot.send_message(text,chat,keyboard)
         elif text == "Freeboard":
             text = "Please wait....\nRetrieving information...."
             bot.send_message(text,chat)
-            text = "The Freeboard link is: 192.168.1.73:1880/freeboard/"+"%23"+"start-79054"
+            text = "The Freeboard link is: seeulaterirrigator.hopto.org:1880/freeboard/"+"%23"+"start-79054"
             bot.send_message(text,chat,keyboard)
 
         # elif text == "Status information":
@@ -116,7 +119,7 @@ def handle_updates(bot, updates, subscriber) :
         #     obj = subscriber.message
         #     subscriber.myUnsubscribe(str(mqtt_topic[0]))
         #     date = datetime.datetime.fromtimestamp(obj["timestamp"]).strftime('%d/%m/%Y %H:%M')
-        #     text = " The System is ON \n The water consumtion was about %s \n Tomorrow the irrigation system will be %s " % (obj["water_topic"], obj["out_pump"]) #CHIEDERE i topic corretti per la pompa e il consumo dell acqua
+        #     text = " The System is ON \n The water consumtion was about %s \n tomorrow the irrigation system will be %s " % (obj["water_topic"], obj["out_pump"]) #CHIEDERE i topic corretti per la pompa e il consumo dell acqua
         #     bot.send_message(text,chat,keyboard)
         elif text.startswith("/"):
             continue

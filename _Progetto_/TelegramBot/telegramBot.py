@@ -29,10 +29,10 @@ class TelegramBot():
             tmp = {}
             tmp["ok"] = True
             tmp["result"] = [];
-            self.updates = json.dumps(content)
+            self.updates = json.dumps(tmp)
 
         
-        # print self.prettyprint_json(self.updates)
+        print self.prettyprint_json(self.updates)
         return self.updates
 
     def get_last_chat_id_and_text(self):

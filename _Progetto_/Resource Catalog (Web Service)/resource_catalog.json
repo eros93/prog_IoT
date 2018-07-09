@@ -21,26 +21,15 @@
             ],
             "rn": "pump2",
             "subnet": "1"
-        },
-        {
-            "ip_address": "192.168.1.10",
-            "mqtt_role": "p",
-            "mqtt_topic": "sensor/subnet/1/hum_temp",
-            "resources": [
-                "temp",
-                "hum_gr"
-            ],
-            "rn": "ard1",
-            "subnet": "1"
         }
     ],
     "latitude": 45.063306,
     "longitude": 7.660051,
+    "moisture_thresh": 45,
     "precipintensity_thresh": 0.3,
     "precipprobability_thresh": 0.65,
-    "moisture_thresh": 45,
-    "watertemp_thresh": 15,
     "usedwater_topic": "irrigation_control/time",
+    "watertemp_thresh": 15,
     "weath_api_key": "c61a2cd84bc2ec6fea75e59362e61c9c",
     "weath_mqtt_out_topic": "weather/forecast"
 }

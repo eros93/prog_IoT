@@ -8,7 +8,13 @@ class Irrigation_Control(object):
     """Control checks if it is necessary to irrigate and in case it is
     true it opens the irrigation pump at the right time for how much time it is needed."""
 
-    def __init__(self):
+    def __init__(self, rcip, rcport):
+        
+        # NEW ###################
+        self.rescatip = rcip
+        self.rescatport = rcport
+        #########################
+        
         self.broker = {}
         self.irrigation_time = 0.0
         self.pump_topic = ''
@@ -25,7 +31,8 @@ class Irrigation_Control(object):
         """Gets the broker ip and port through a web request."""
         #print "I'm in get_broker_infos"
 
-        r = requests.get('http://192.168.1.71:8080/res_cat/broker_info')
+        r = requests.get('http://'+self.rescatip+':'+str(self.rescatport)+'/res_cat/broker_info')
+        # r = requests.get('http://192.168.1.71:8080/res_cat/broker_info')
         infos = json.loads(r.text)
         self.broker['ip'] = infos['broker_ip']
         self.broker['port'] = infos['broker_port']
@@ -34,7 +41,8 @@ class Irrigation_Control(object):
         """Retrieves thresholds for humidity and temperature."""
         #print "I'm in get_weather_and_water_topic"
 
-        r = requests.get('http://192.168.1.71:8080/res_cat/all')
+        r = requests.get('http://'+self.rescatip+':'+str(self.rescatport)+'/res_cat/all')
+        # r = requests.get('http://192.168.1.71:8080/res_cat/all')
         catalog = json.loads(r.text)
         output = {}
         output['weather'] = catalog['weath_mqtt_out_topic']
@@ -47,7 +55,8 @@ class Irrigation_Control(object):
         """Retrieves the mqtt topic for a certain device"""
         #print "I'm in get_device_topic"
 
-        r = requests.get('http://192.168.1.71:8080/res_cat/dev_list')
+        r = requests.get('http://'+self.rescatip+':'+str(self.rescatport)+'/res_cat/dev_list')
+        # r = requests.get('http://192.168.1.71:8080/res_cat/dev_list')
         devices_list = json.loads(r.text)
         for i in range(len(devices_list)):
             a = devices_list[i]

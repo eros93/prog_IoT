@@ -36,7 +36,7 @@ class Withdraw():
 		self.stop_flag = False
 		self.mqtt_sub_weather.start(self.broker_ip, self.broker_port)
 		self.mqtt_sub_weather.mySubscribe(self.topic_weather)
-
+		#self.mqtt_sub_weather.mySubscribe("weather/forecast")
 
 	def end(self):
 		self.mqtt_sub_weather.stop()
@@ -133,7 +133,7 @@ class MySubscriber():
 
 		self.client_mqtt = mqtt.Client(clientid, False)
 
-		#self.client_mqtt.on_connect = self.myOnConnect
+		self.client_mqtt.on_connect = self.myOnConnect
 		self.client_mqtt.on_message = self.myOnMessage
 
 

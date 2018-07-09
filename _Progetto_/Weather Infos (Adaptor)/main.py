@@ -8,7 +8,7 @@ import schedule
 from datetime import datetime
 
 #Resource Catalog
-IP_resource_catalog = "192.168.1.71"
+IP_resource_catalog = "192.168.1.73"
 port_resource_catalog = 8080
 
 
@@ -47,10 +47,10 @@ def periodical_update():
 
 if __name__ == "__main__":
 
-	periodical_update()
+	periodical_update()		# DEBUG
 
 	schedule.every().day.at("21:00").do(periodical_update)
 
 	while True:
 		schedule.run_pending()
-		time.sleep(10)
+		time.sleep(60)

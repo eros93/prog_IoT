@@ -4,7 +4,10 @@ import schedule
 import time
 
 
-irrigation = Irrigation_Control()   # creation of the irrigation control object
+RESOURCECAT_IP = "192.168.1.73"
+RESOURCECAT_PORT = 8080
+
+irrigation = Irrigation_Control(RESOURCECAT_IP, RESOURCECAT_PORT)   # creation of the irrigation control object
 
 def irrigation_routine():
     print ("Irrigation routine started at %s" %time.strftime("%H:%M"))
@@ -21,7 +24,7 @@ def irrigation_routine():
     
     schedule.clear()
     schedule.every().day.at(irrigation.sunset_time).do(irrigation_routine)
-    print "RE-schedule.every().day.at(%s).do(irrigation_routine)" %irrigation.sunset_time
+    print "Process RESCHEDULED:\n\tschedule.every().day.at(%s).do(irrigation_routine)" %irrigation.sunset_time
 
     return
 

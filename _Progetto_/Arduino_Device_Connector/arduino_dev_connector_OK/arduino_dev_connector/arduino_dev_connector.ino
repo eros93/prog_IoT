@@ -23,7 +23,7 @@ IPAddress broker(192, 168, 1, 151); //broker address
 unsigned int broker_port = 1883;
 
 //IPAddress res_cat(10, 42, 0, 1);
-IPAddress res_cat(192, 168, 1, 71);
+IPAddress res_cat(192, 168, 1, 73);
 unsigned int res_cat_port = 8080;
 char res_cat_s[24];
 
@@ -97,10 +97,6 @@ void loop() {
   delay(60000);  //Publish every minute
   //delay(1000);  //Publish every5 second DEBUG
 }
-
-
-
-
 
 
 /*/////////////////////////////////// FUNCTIONS ///////////////////////////////////////////////////////*/

@@ -5,7 +5,7 @@ import time
 ######################
 # RESOURCE CATALOG
 ######################
-RESOURCECAT_IP = "192.168.1.71"
+RESOURCECAT_IP = "192.168.1.73"
 RESOURCECAT_PORT = 8080
 
 ###############

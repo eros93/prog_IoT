@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import socket
 import requests
 import json
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 ##################
@@ -18,13 +18,15 @@ class Pump():
 		self.mqtt_r = "s"
 		self.pin = relay_pin
 		self.ip = self.get_dev_ip()
+		self.relay_pin = relay_pin
 
 		self.mqttSub = MySubscriber(pumpname, self)
 
-		# # Initial setting Relay
-		# GPIO.setmode(GPIO.BCM)
-		# GPIO.setup(relay_pin, GPIO.OUT)
-		# GPIO.output(relay_pin, GPIO.LOW)
+		# Initial setting Relay
+		GPIO.setwarnings(False)
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(relay_pin, GPIO.OUT)
+		GPIO.output(relay_pin, GPIO.LOW)
 
 
 	def get_dev_ip(self):
@@ -92,10 +94,10 @@ class Pump():
 			#payload = json.loads(msg)
 			if msg.upper() == "OFF":
 				print("\n\tRelay set on OFF status")
-				#GPIO.output(self.relay_pin, GPIO.LOW)
+				GPIO.output(self.relay_pin, GPIO.LOW)
 			elif msg.upper() == "ON":
 				print("\n\tRelay set on ON status")
-				#GPIO.output(self.relay_pin, GPIO.HIGH)
+				GPIO.output(self.relay_pin, GPIO.HIGH)
 			else:
 				raise NameError("Pump commands can be only \"OFF\" or \"ON\"")
 
