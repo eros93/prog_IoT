@@ -19,10 +19,10 @@ class MQTTClient():
 
         return
 
-    def myPublish(self, topic, msg, qos=2):
+    def myPublish(self, topic, msg, qos=2, retain=False):
         #POSSIBLE ERROR-CHECK
         self.msg = msg
-        self._paho_mqtt.publish(topic, msg, qos, True)
+        self._paho_mqtt.publish(topic, msg, qos, retain)
         return
 
     def mySubscribe(self, topic, qos=2):

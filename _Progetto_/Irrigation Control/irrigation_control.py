@@ -141,7 +141,7 @@ class Irrigation_Control(object):
             try:
                 self.irrigation_time = stop - start
                 try:
-                    self.mqtt.myPublish(time_topic, str(self.irrigation_time), 2)   # IMPORTANT: time is measured in ticks
+                    self.mqtt.myPublish(time_topic, str(self.irrigation_time), retain=True)   # IMPORTANT: time is measured in ticks
                     print ("watering duration "+str(self.irrigation_time))
                 except (TypeError):
                     print ("Impossible to publish on "+time_topic)
