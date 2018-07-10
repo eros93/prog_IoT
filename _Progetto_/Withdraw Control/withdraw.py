@@ -36,12 +36,13 @@ class Withdraw():
 		self.stop_flag = False
 		######
 		# DEBUG
-		print ( "Topic weather: %s" %(self.topic_weather))
-		print ( "Topic used water: %s" %(self.topic_usedwater))
+		print ("Topic weather: %s" %(self.topic_weather))
+		print ("Topic used water: %s" %(self.topic_usedwater))
 		######
 		self.mqtt_sub_weather.start(self.broker_ip, self.broker_port)
 		self.mqtt_sub_weather.mySubscribe(self.topic_weather)
 		#self.mqtt_sub_weather.mySubscribe("weather/forecast")
+		return
 
 	def end(self):
 		self.mqtt_sub_weather.stop()

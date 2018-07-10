@@ -15,8 +15,10 @@ def periodic_withdraw_control():
 	all_res_cat = myWithdraw.get_all_data(RESOURCECAT_IP, RESOURCECAT_PORT)
 	myWithdraw.search_topic_inpump(all_res_cat)
 	myWithdraw.run()
-	if myWithdraw.stop_flag:
-		print "Withdraw Control ended."
+	#if myWithdraw.stop_flag:
+	while not myWithdraw.stop_flag:
+		time.sleep(1)
+	print "Withdraw Control ended."
 
 
 if  __name__ == "__main__":
