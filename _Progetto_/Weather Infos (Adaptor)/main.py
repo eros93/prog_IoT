@@ -41,6 +41,7 @@ def periodical_update():
 	mqtt_pub.start(res_cat.broker_ip, res_cat.broker_port)
 	mqtt_pub.myPublish(res_cat.mqtt_t_out, packet, 2, True)
 	mqtt_pub.stop()
+	print "Process RESCHEDULED:\n\tschedule.every().day.at(\"23:00\").do(periodical_update)"
 
 	return
 
@@ -49,7 +50,7 @@ if __name__ == "__main__":
 
 	periodical_update()		# DEBUG
 
-	schedule.every().day.at("21:00").do(periodical_update)
+	schedule.every().day.at("23:00").do(periodical_update)
 
 	while True:
 		schedule.run_pending()

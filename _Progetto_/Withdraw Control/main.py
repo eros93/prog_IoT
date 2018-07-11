@@ -19,6 +19,7 @@ def periodic_withdraw_control():
 	while not myWithdraw.stop_flag:
 		time.sleep(1)
 	print "Withdraw Control ended."
+	print "Process RESCHEDULED:\n\tschedule.every().day.at(\"01:00\").do(periodic_withdraw_control)"
 
 
 if  __name__ == "__main__":

@@ -80,9 +80,15 @@ class Withdraw():
 			pub = MyPublisher("Withdraw")
 			pub.start(self.broker_ip,self.broker_port)
 			time.sleep(2)
-			pub.myPublish(self.topic_inpump, "ON")
-			time.sleep(int(float(payload)))
-			pub.myPublish(self.topic_inpump, "OFF")
+			# NEW
+			if(int(float(payload)) > 0):
+				pub.myPublish(self.topic_inpump, "ON")
+				time.sleep(int(float(payload)))
+				pub.myPublish(self.topic_inpump, "OFF")
+			# NEW
+			print ("Withdraw process completed. Rewrite topic on %s -> 0 seconds" %(self.topic_usedwater))
+			# NEW
+			pub.myPublish(self.topic_usedwater, '0', retain=True)
 			pub.stop()
 			#pub.client_mqtt.disconnect()
 			self.stop_flag = True
@@ -108,15 +114,15 @@ class MyPublisher():
 		return
 
 	def myOnPublish(self, clientid, userdata, mid):
-	 	print ("\n\tMessage sent:")
-	 	print ("\n\t"+self.msg)
-	 	self.msg = None
-	 	return
+		print ("\n\tMessage sent:")
+		print ("\n\t"+self.msg)
+		self.msg = None
+		return
 
-	def myPublish(self, topic, msg, qos=2):
+	def myPublish(self, topic, msg, qos=2, retain=False):
 		#POSSIBLE ERROR-CHECK
 		self.msg = msg
-		self.client_mqtt.publish(topic, msg, qos)
+		self.client_mqtt.publish(topic, msg, qos, retain)
 		return
 
 	def start(self, broker, port):
