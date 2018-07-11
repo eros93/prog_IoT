@@ -84,6 +84,10 @@ class Irrigation_Control(object):
                 #self.sunset_time = msg['sunset']   # only unix timestamp
                 #print self.sunset_time
                 time.sleep(5)
+            else:
+                self.watering_flag = False
+                self.sunset_time = datetime.datetime.fromtimestamp(int(msg['sunset'])).strftime('%H:%M')    # from unix timestamp --> format h:m
+                time.sleep(5)
 
         elif (topic == self.humtemp_topic):
             # update the ground humidity and water temperature measurements
@@ -147,7 +151,7 @@ class Irrigation_Control(object):
                     print ("Impossible to publish on "+time_topic)
                     pass
             except (UnboundLocalError):
-                print "time of start not exists because irrigation doesn't even start today"
+                print "Time of start not exists because irrigation doesn't even start today"
                 pass
             self.mqtt.stop()
         else:
