@@ -110,8 +110,14 @@ class Irrigation_Control(object):
 
         self.mqtt.mySubscribe(weather_topic, 2)
         time.sleep(10)
-        self.mqtt.mySubscribe(humtemp_topic, 2)
-        time.sleep(10)
+        try:
+            self.mqtt.mySubscribe(humtemp_topic, 2)
+            time.sleep(10)
+        except (ValueError):
+            print "\"No topic specified for moisture and water temperature, or incorrect topic type.\""
+            print "out_pump is set OFF"
+            self.mqtt.myPublish(self.pump_topic, 'OFF')
+            return
 
         print "out_pump is set OFF at beginning"
         self.mqtt.myPublish(self.pump_topic, 'OFF')
@@ -120,10 +126,10 @@ class Irrigation_Control(object):
             c = 0
             start_flag = True   # to start the timecounter only once
             while self.humidity < hum_th:     # check periodically the moisture
-                print "moisture is too low"
+                print "moisture (%s%%) is too low (th = %s)" %(str(self.humidity), str(hum_th))
                 # wait for temperature reaches threshold or or counter goes off = 1 hr
                 if (self.temperature < temp_th and c <= 6):
-                    print "water temperature not yet ready to irrigate"
+                    print "water temperature (%s) not yet ready to irrigate (th = %s)" %(str(self.temperature), str(hum_th))
                     time.sleep(600)  # 10 min
                     c = c+1
                 elif (start_flag == True):
@@ -156,4 +162,5 @@ class Irrigation_Control(object):
             self.mqtt.stop()
         else:
             print "watering flag FALSE --> DO NOTHING"
+        
         return

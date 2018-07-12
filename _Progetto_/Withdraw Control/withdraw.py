@@ -115,7 +115,7 @@ class MyPublisher():
 
 	def myOnPublish(self, clientid, userdata, mid):
 		print ("\n\tMessage sent:")
-		print ("\n\t"+self.msg)
+		print ("\n\t"+str(self.msg))
 		self.msg = None
 		return
 
