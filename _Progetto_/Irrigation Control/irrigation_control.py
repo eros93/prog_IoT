@@ -47,6 +47,7 @@ class Irrigation_Control(object):
         output = {}
         output['weather'] = catalog['weath_mqtt_out_topic']
         output['water'] = catalog['usedwater_topic']
+        output['water_bot'] = catalog['usedwater_topic_bot']
         output['moisture'] = catalog['moisture_thresh']
         output['water_temp'] = catalog['watertemp_thresh']
         return output
@@ -97,7 +98,7 @@ class Irrigation_Control(object):
             self.temperature = hum_temp['temp']
             #print self.temperature
 
-    def start_watering(self, humtemp_topic, weather_topic, time_topic, hum_th, temp_th):
+    def start_watering(self, humtemp_topic, weather_topic, time_topic, time_topic_bot, hum_th, temp_th):
         """It's a function which checks if there is need to water. If there is need to water, it checks humidity
         and temperature to know the right moment to irrigate, then it acts on irrigation pump.
         Moreover it measures how much the watering has lasted."""
@@ -155,6 +156,11 @@ class Irrigation_Control(object):
                     print ("watering duration "+str(self.irrigation_time))
                 except (TypeError):
                     print ("Impossible to publish on "+time_topic)
+                    pass
+                try:
+                    self.mqtt.myPublish(time_topic_bot, str(self.irrigation_time), retain=True)   # IMPORTANT: time is measured in ticks
+                except (TypeError):
+                    print ("Impossible to publish on "+time_topic_bot)
                     pass
             except (UnboundLocalError):
                 print "Time of start not exists because irrigation doesn't even start today"

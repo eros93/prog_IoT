@@ -16,11 +16,12 @@ def irrigation_routine():
     weather_time = irrigation.get_weather_and_water_topic()
     weather_topic = weather_time['weather']
     time_topic = weather_time['water']
+    time_topic_bot = weather_time['water_bot']
     hum_th = weather_time['moisture']    # ground humidity threshold
     temp_th = weather_time['water_temp']   # water temperature threshold
     humtemp_topic = irrigation.get_device_topic('ard1')
     irrigation.pump_topic = irrigation.get_device_topic('pump1')
-    irrigation.start_watering(humtemp_topic, weather_topic, time_topic, hum_th, temp_th)
+    irrigation.start_watering(humtemp_topic, weather_topic, time_topic, time_topic_bot, hum_th, temp_th)
     
     schedule.clear()
     schedule.every().day.at(irrigation.sunset_time).do(irrigation_routine)
