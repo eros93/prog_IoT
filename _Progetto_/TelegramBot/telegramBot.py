@@ -22,7 +22,7 @@ class TelegramBot():
         if offset:
             url_req += "&offset={}".format(offset)
         self.updates = get_json_from_url(url_req)
-        print self.prettyprint_json(self.updates)
+        #print self.prettyprint_json(self.updates)
         return self.updates
 
     def get_last_chat_id_and_text(self):
@@ -36,8 +36,10 @@ class TelegramBot():
 
     def send_message(self,text, chat_id, reply_markup=None):
         url_req = self.url + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+        url_req += "&parse_mode={}".format("HTML")
         if reply_markup:
             url_req += "&reply_markup={}".format(reply_markup)
+
         return get_json_from_url(url_req)
 
     def get_last_update_id(self):
@@ -47,9 +49,10 @@ class TelegramBot():
             update_ids.append(int(update["update_id"]))
         return max(update_ids)
 
-    def build_keyboard(self,items):
-        keyboard = [[item] for item in items]
-        reply_markup = {"keyboard": keyboard, "one_time_keyboard": True}
+    def build_keyboard(self,keyboard):
+        #keyboard = [[item] for item in items]
+        #print(keyboard)
+        reply_markup = {"keyboard": keyboard, "one_time_keyboard": True, "resize_keyboard": True}
         return json.dumps(reply_markup)
 
 

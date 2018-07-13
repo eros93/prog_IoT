@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import emoji
 from telegramBot import TelegramBot
 from MQTT_pub_sub import MySubscriber
 import time
@@ -7,6 +7,7 @@ import datetime
 import requests
 import json
 import os
+import datetime
 
 
 TOKEN = "294196450:AAEdDwOslUfvqvw4uB1ovsDehGtirav0VDY"
@@ -18,22 +19,27 @@ res_cat_port = "8080"
 #and do a function that save the state for today (if rain or not)
 #chiedere ad enrico il json giusto
 
-
+# :sunflower: :shower:
 
 def handle_updates(bot, updates, subscriber, last_update_id) :
     for update in updates["result"]:
         text = update["message"]["text"]
         chat = update["message"]["chat"]["id"]
-        item1 = ['Water Temperature', 'Ground Humidity', 'Weather Forecast','Status information','DashBoard', 'Set Thresholds']
+        from_username = update["message"]["from"]["username"]
+        date = datetime.datetime.fromtimestamp(int(update["message"]["date"])).strftime('%d/%m/%Y %H:%M:%S') 
+        log = text + " - " + from_username + " - "+ date
+        print(log) 
+        item1 = [[emoji.emojize('Water temperature'), 'Ground Humidity', emoji.emojize('Weather Forecast :partly_sunny:' , use_aliases = True)],[emoji.emojize('Status information :chart_with_upwards_trend:', use_aliases = True),emoji.emojize('DashBoard :link:', use_aliases = True)], [emoji.emojize('Set Thresholds :wrench:', use_aliases = True)]]
         keyboard1 = Bot.build_keyboard(item1)
-        item2 =['Moisture [%]', 'Water temperature [C deg]', 'Precipitation intensity [mm/h]', 'Precipitation probability [%]', 'System Informations']
+        item2 =[['Moisture [%]', 'Water temperature [C deg]', 'Precipitation intensity [mm/h]'], ['Precipitation probability [%]', 'Reset default values'], [emoji.emojize('System Information :mag:', use_aliases = True)]]
         keyboard2 = Bot.build_keyboard(item2)
         replied_text = None
         if update["message"].has_key("reply_to_message"):
             replied_text = update["message"]["reply_to_message"]["text"]
         if text == "/start":
-            bot.send_message("Welcome to your personal SeeUlater_Bot",chat,keyboard1)
-        elif text == "Water Temperature":
+            message = " Welcome to your personal <b>SeeUlaterIrrigator</b> Bot "
+            bot.send_message(message,chat,keyboard1)
+        elif text == emoji.emojize("Water temperature"):
             text = "Please wait...\nRetrieving information..."
             bot.send_message(text,chat)
             (weather_topic, mqtt_topic, water_topic) = topic_update(res_cat_ip, res_cat_port)
@@ -55,7 +61,7 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
             date = datetime.datetime.fromtimestamp(obj["timestamp"]).strftime('%d/%m/%Y %H:%M')
             text = "At %s the ground moisture was %r " % (str(date), obj["hum_gr"]) + "%"
             bot.send_message(text,chat,keyboard1)
-        elif text == "Weather Forecast":
+        elif text == emoji.emojize('Weather Forecast :partly_sunny:', use_aliases = True):
             text = "Please wait...\nRetrieving information..."
             bot.send_message(text,chat)
             (weather_topic, mqtt_topic, water_topic) = topic_update(res_cat_ip, res_cat_port)
@@ -67,7 +73,7 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
             time_sunrise = datetime.datetime.fromtimestamp(obj["sunrise"]).strftime('%H:%M')
             text = "The weather forecast for tomorrow:\n- Sunrise will be at %s\n- Sunset will be at %s\n- Precipitation probability is %r\n- Precipitation intensity will be  %r mm\n\nSummary: %s" % (str(time_sunrise),str(time_sunset), obj["precipProb"], obj["precipInt"], str(obj["summary"]))
             bot.send_message(text,chat,keyboard1)
-        elif text == "Status information":
+        elif text == emoji.emojize('Status information :chart_with_upwards_trend:', use_aliases = True):
             text = "Please wait...\nRetrieving information..."
             bot.send_message(text,chat)
             if os.system("ping -c 1 192.168.1.100") == 0:
@@ -103,7 +109,7 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
             #date = datetime.datetime.fromtimestamp(obj["timestamp"]).strftime('%d/%m/%Y %H:%M')
             #TODO watering topic to finisch -> ask to federica and obj_weather return TRUE -> so make an if to make the correct string
             #text = " Tomorrow the system will be %s , water consumption is about %s " % (obj_weather["watering_flag"], obj_water[""])
-            if obj_weather["watering_flag"] == True:
+            if obj_weather["watering_flag"] == "True":
                 text = "Tomorrow watering process is needed. "
             else:
                 text = "Tomorrow watering process is NOT needed. "  
@@ -112,19 +118,19 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
             consumption_liter = time_water_open * 0.028
             text += "\nThe water consumption was about %s liters. " % str(round(consumption_liter,2))
             bot.send_message(text,chat,keyboard1)
-        elif text == "Freeboard":
+        elif text == emoji.emojize('DashBoard :link:', use_aliases = True):
             text = "Please wait...\nRetrieving information..."
             bot.send_message(text,chat)
             text = "The Freeboard link is: seeulaterirrigator.hopto.org:1880/freeboard/"+"%23"+"start-79054"
             bot.send_message(text,chat,keyboard1)
-        elif text == "Set Thresholds":
-            text = "Control Settings \n\nPlease wait...\nRetrieving information... "
+        elif text == emoji.emojize('Set Thresholds :wrench:', use_aliases = True):
+            text = "<b>Control Settings</b> \n\nPlease wait...\nRetrieving information... "
             bot.send_message(text,chat)
             ths = get_thresholds(res_cat_ip, res_cat_port)
             message = build_th_message(ths)
             bot.send_message(message,chat,keyboard2)
-        elif text == "System Informations":
-            text = "System Informations \nWhich information are you looking for ?"
+        elif text == emoji.emojize('System Information :mag:', use_aliases = True):
+            text = "<b>System Information</b> \n\nWhich information are you looking for?"
             bot.send_message(text,chat,keyboard1)
 
         elif text == "Moisture [%]":
@@ -139,6 +145,25 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
         elif text == "Precipitation intensity [mm/h]":
             message = "Reply to this message with the new precipitation intensity threshold [mm/h]"
             bot.send_message(message, chat)
+        elif text == "Reset default values":
+            #default definition of the values
+            json_put = {}
+            json_put["moisture"] = 45
+            json_put["precipprob"] = 0.65
+            json_put["watertemp"] = 15
+            json_put["precipint"] = 0.3
+            res_url = "http://" + res_cat_ip + ":" + res_cat_port + "/res_cat/upd_thresholds"
+            r = requests.put(res_url, json=json_put)
+            print(r.status_code)
+            if r.status_code == 200:
+                message = "Thresholds have been correctly updated"
+                bot.send_message(message, chat)
+                ths = get_thresholds(res_cat_ip, res_cat_port)
+                message = build_th_message(ths)
+                bot.send_message(message, chat, keyboard2)
+            else:
+                message = "Error! Please try again in a few minutes..."
+                bot.send_message(message, chat, keyboard2)
 
         elif replied_text != None:
             if replied_text == "Reply to this message with the new moisture threshold [%]":
@@ -264,7 +289,7 @@ def topic_update (res_cat_ip, res_cat_port):
     response_res_cat = requests.get(res_url)
     obj = json.loads(response_res_cat.text)
     weather_topic = obj["weath_mqtt_out_topic"]
-    water_topic = obj["usedwater_topic"]
+    water_topic = obj["usedwater_topic_bot"]
     int = len(obj["dev_list"])
     mqtt_topic = []
     for i in range(int):
@@ -289,10 +314,11 @@ def is_float(s):
         return True
     except ValueError:
         return False
+        
 def build_th_message(ths):
     text = """The current thresholds are:\n
 Moisture = %s [%%]
-Water temperature = %s [°C]
+Water temperature = %s [C degree]
 Precipitation intensity = %s [mm/h]
 Precipitation probability = %s [%%]\n
 Select a threshold to change the value:""" %(ths['moist_th'], ths['water_temp_th'], ths['int_prec_th'], str(float(ths['prob_prec_th'])*100))
@@ -320,5 +346,3 @@ while True:
         print(e)
         time.sleep(0.5)
         continue
-                  
-        
