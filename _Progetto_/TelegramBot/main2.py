@@ -77,19 +77,19 @@ def handle_updates(bot, updates, subscriber, last_update_id) :
             text = "Please wait...\nRetrieving information..."
             bot.send_message(text,chat)
             if os.system("ping -c 1 192.168.1.100") == 0:
-                text = "RaspberryPy2 (192.168.1.100) is up "
+                text = "RaspberryPi2 (192.168.1.100) is up "
             else:
-                text = "RaspberryPy2 (192.168.1.100) is down "
+                text = "RaspberryPi2 (192.168.1.100) is down "
             bot.send_message(text,chat)
             if os.system("ping -c 1 192.168.1.151") == 0:
-                text = "RaspberryPy3 (192.168.1.151) is up "
+                text = "RaspberryPi3 (192.168.1.151) is up "
             else:
-                text = "RaspberryPy3 (192.168.1.151) is down "
+                text = "RaspberryPi3 (192.168.1.151) is down "
             bot.send_message(text,chat)
             if os.system("ping -c 1 192.168.1.65") == 0:
-                text = "RaspberryPyBOT (192.168.1.65) is up "
+                text = "RaspberryPiBOT (192.168.1.65) is up "
             else:
-                text = "RaspberryPyBOT (192.168.1.65) is down "
+                text = "RaspberryPiBOT (192.168.1.65) is down "
             bot.send_message(text,chat)
             if os.system("ping -c 1 192.168.1.10") == 0:
                 text = "Arduino (192.168.1.10) is up "
