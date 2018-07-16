@@ -25,25 +25,32 @@ def build_packet(json_pkt, prob_th, int_th):
 
 def periodical_update():
 
-	print datetime.today()
+	try:
+		print datetime.today()
 
-	#Retrieve infos from Resource Catalog
-	res_cat = ResourceCatalog(IP_resource_catalog, port_resource_catalog)
+		#Retrieve infos from Resource Catalog
+		res_cat = ResourceCatalog(IP_resource_catalog, port_resource_catalog)
 
-	#Retrieve forecast from Weather API
-	w_info = WeatherInfo(res_cat.api_key, res_cat.lat, res_cat.lng)
+		#Retrieve forecast from Weather API
+		w_info = WeatherInfo(res_cat.api_key, res_cat.lat, res_cat.lng)
 
-	#Build the final JSON (also WITHDRAW/WATERING DECISION)
-	packet = build_packet(w_info.tomorrow_forecast(), res_cat.probprec_th, res_cat.intprec_th)
+		#Build the final JSON (also WITHDRAW/WATERING DECISION)
+		packet = build_packet(w_info.tomorrow_forecast(), res_cat.probprec_th, res_cat.intprec_th)
 
-	#Mqtt publisher on given topic
-	mqtt_pub = MyPublisher("weath_adpt")
-	mqtt_pub.start(res_cat.broker_ip, res_cat.broker_port)
-	mqtt_pub.myPublish(res_cat.mqtt_t_out, packet, 2, True)
-	mqtt_pub.stop()
-	print "Process RESCHEDULED:\n\tschedule.every().day.at(\"23:00\").do(periodical_update)"
-
-	return
+		#Mqtt publisher on given topic
+		mqtt_pub = MyPublisher("weath_adpt")
+		mqtt_pub.start(res_cat.broker_ip, res_cat.broker_port)
+		mqtt_pub.myPublish(res_cat.mqtt_t_out, packet, 2, True)
+		mqtt_pub.stop()
+		print "Process RESCHEDULED:\n\tschedule.every().day.at(\"23:00\").do(periodical_update)"
+		return
+	
+	except Exception as e:
+		print(e)
+		print("\nWait 5 minutes before retry...")
+		time.sleep(300)
+		periodical_update()
+		return
 
 
 if __name__ == "__main__":
