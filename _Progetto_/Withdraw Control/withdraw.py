@@ -12,7 +12,7 @@ class Withdraw():
 	def __init__(self, clientid):
 
 		self.mqtt_sub_weather = MySubscriber("weathersub_"+clientid, self)
-		self.mqtt_sub_usedwater = MySubscriber("usedwatersub_"+clientid, self)
+		self.mqtt_sub_usedwater = MySubscriber("usedwatersub__"+clientid, self)
 		
 	def get_all_data(self, IP, port):
 		response=urllib2.urlopen("http://" + str(IP) + ":" + str(port) + "/res_cat/all")
@@ -76,19 +76,23 @@ class Withdraw():
 			#print "I'm in notify topic usedwater"
 			self.mqtt_sub_usedwater.stop()
 			#self.mqtt_sub_usedwater.client_mqtt.disconnect()
-			print ("Publish pump ON for "+payload+" seconds")
+			print ("\n\n\tPublish pump ON for "+payload+" seconds")
 			pub = MyPublisher("Withdraw")
 			pub.start(self.broker_ip,self.broker_port)
 			time.sleep(2)
 			# NEW
 			if(int(float(payload)) > 0):
+				print ("\n\tPump ON")
 				pub.myPublish(self.topic_inpump, "ON")
 				time.sleep(int(float(payload)))
+				print ("\n\tPump OFF")
 				pub.myPublish(self.topic_inpump, "OFF")
+				time.sleep(5)
 			# NEW
 			print ("Withdraw process completed. Rewrite topic on %s -> 0 seconds" %(self.topic_usedwater))
 			# NEW
-			pub.myPublish(self.topic_usedwater, '0', retain=True)
+			pub.myPublish(self.topic_usedwater, "0", retain=True)
+			time.sleep(5)
 			pub.stop()
 			#pub.client_mqtt.disconnect()
 			self.stop_flag = True
