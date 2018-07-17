@@ -130,9 +130,9 @@ class Irrigation_Control(object):
                 print "moisture (%s%%) is too low (th = %s)" %(str(self.humidity), str(hum_th))
                 # wait for temperature reaches threshold or or counter goes off = 1 hr
                 if (self.temperature < temp_th and c <= 6):
-                    print "water temperature (%s) not yet ready to irrigate (th = %s)" %(str(self.temperature), str(hum_th))
-                    time.sleep(600)  # 10 min
+                    print "water temperature (%s) not yet ready to irrigate (th = %s)" %(str(self.temperature), str(temp_th))
                     c = c+1
+                    time.sleep(600)  # 10 min
                 elif (start_flag == True):
                     print "water is OK so out_pump is set ON"
                     self.mqtt.myPublish(self.pump_topic, 'ON')
